@@ -1,0 +1,6 @@
+{
+  "name": "roblox-farm-cloud", "version": "2.0.0", "private": true,
+  "engines": {"node": ">=20"},
+  "scripts": {"start": "node server.js"},
+  "dependencies": {"discord.js": "^14.18.0", "express": "^4.21.2", "socket.io": "^4.8.1", "pg": "^8.13.1", "dotenv": "^16.4.7"}
+}
