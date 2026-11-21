@@ -1,19 +1,18 @@
-# Roblox Farm Dashboard Cloud
+# Anime Adventures Farm Dashboard V3
 
-Discord Webhook -> Discord Reader Bot -> PostgreSQL -> Express + Socket.IO Dashboard.
+A responsive, fan-made UI for the existing Discord webhook → Discord reader → PostgreSQL dashboard.
 
-## Deploy to Render (free tier)
-1. Create a **private** GitHub repository. Upload all files from this folder, including `.gitignore` and `render.yaml`, but **never** `.env` or `node_modules`.
-2. Create a PostgreSQL database (for example Supabase). Obtain a connection URI from its dashboard. Use a connection URI reachable from Render; Supabase's session pooler connection may be necessary if direct IPv6 is unavailable. Do not share the URI publicly.
-3. In Render choose **New > Blueprint** and connect the GitHub repository with `render.yaml`, or create a **Web Service** manually (`npm install`, `npm start`, Free plan).
-4. Set `DISCORD_BOT_TOKEN`, `DISCORD_CHANNEL_ID`, `DISCORD_WEBHOOK_ID` (optional), `DATABASE_URL`, `DATABASE_SSL=true`, and a strong `DASHBOARD_PASSWORD` as private environment variables. Never put credentials in GitHub.
-5. Ensure the Discord bot has Message Content Intent and View Channel / Read Message History permissions in the farm channel.
-6. Open the Render URL and sign in using username `admin` and the dashboard password.
+## Upgrade your existing Render deployment
+
+1. Upload **all files** in this folder to the root of your existing GitHub repository, replacing the previous `server.js`, `package.json`, and `public/index.html` where applicable. Upload the **entire `public/assets/` folder**. Do not upload `.env`, passwords, or database files.
+2. Commit changes to `main`. Render will redeploy automatically if auto-deploy is enabled. Otherwise use **Manual Deploy → Deploy latest commit**.
+3. Keep your existing Render Environment Variables. Do not create a second Render service or Supabase project.
+4. Open the existing `.onrender.com` URL and sign in with the same `admin` username and your configured `DASHBOARD_PASSWORD`.
 
 ## Notes
-- **Render Free sleeps after inactivity.** The Discord reader cannot stay connected while asleep. On restart it fetches up to the last 1000 messages to catch up; older messages may be missed. Free hosting is not guaranteed 24/7 monitoring.
-- Bot status is connection to the dashboard service, not Roblox game status. A report only arrives when the farm webhook posts to Discord.
-- Rewards parsing is best-effort and may require adjustments for your particular embed layout.
-- The `/health` route is intentionally public; all dashboard data and Socket.IO connections require Basic authentication.
-- Discord token and webhook URL previously posted in chat must be rotated before deployment.
-- For local development: copy `.env.example` to `.env`, fill secrets, `npm install`, `npm start`, open `http://localhost:3030`.
+
+- Item icons are **original illustrative SVGs**, not extracted or official Anime Adventures icons. Replace `public/assets/*.svg` with your own licensed or permitted images while preserving filenames if you want exact game item art.
+- Item totals represent **cumulative rewards**, not inventory balance.
+- Recent activity graph shows the latest 40 reported wins/losses, not per-day totals.
+- The UI does not change your database or bot credentials. Render Free can sleep, and socket connection does not mean the Roblox farming script is online.
+- If your Discord webhook/bot/database/dashboard secrets were previously exposed, rotate them before using the service.
