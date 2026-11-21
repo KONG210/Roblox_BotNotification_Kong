@@ -85,12 +85,13 @@ async function load(){
     const res=await fetch('/api/dashboard',{cache:'no-store'});
     if(!res.ok)throw Error('HTTP '+res.status);
     const data=await res.json(),s=data.stats||{},r0=(data.runs||[])[0];
-    allRuns=data.runs||[];
+    // Normalize rows already stored with "## " prefixes; player can be "Name · Level 245 [..]".
+    allRuns=(data.runs||[]).map(r=>({...r,map:String(r.map??'').replace(/^[#\s]+/,'').trim(),player:String(r.player??'').split(' · ')[0].trim()}));
     allRewards=Object.entries(data.totals||{}).filter(([n])=>!HIDDEN.test(n)).sort((a,b)=>b[1]-a[1]);
     const total=Number(s.total),rate=total?100*Number(s.wins)/total:0;
     $('total').textContent=fmt(s.total);$('wins').textContent=fmt(s.wins);$('losses').textContent=fmt(s.losses);
     $('rate').textContent=rate.toFixed(1)+'%';$('rateSub').textContent=`${fmt(s.wins)} / ${fmt(s.total)}`;$('rateBar').style.width=rate+'%';
-    $('player').textContent=r0?.player||'—';lastReportAt=data.lastReport;renderAge();
+    $('player').textContent=allRuns[0]?.player||'—';lastReportAt=data.lastReport;renderAge();
     render();
   }catch(err){$('runs').innerHTML='<div class="skeleton">โหลดข้อมูลไม่สำเร็จ: '+esc(err.message)+'</div>'}
 }

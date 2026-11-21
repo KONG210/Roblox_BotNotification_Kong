@@ -38,7 +38,7 @@ io.use((socket,next) => {
   const req = socket.request;
   if (authorized(req)) next(); else next(new Error('Unauthorized'));
 });
-const clean = value => String(value ?? '').replace(/<[^>]*>/g, '').replace(/\*\*/g, '').trim();
+const clean = value => String(value ?? '').replace(/<[^>]*>/g, '').replace(/\*\*/g, '').replace(/^#+\s*/gm, '').trim(); // also strips markdown headings ("## Map")
 function parseMessage(msg) {
   const e = msg.embeds?.[0];
   const fields = (e?.fields || []).map(f => ({name:clean(f.name), value:clean(f.value)}));
