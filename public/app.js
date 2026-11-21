@@ -10,6 +10,7 @@ const hue=s=>[...String(s)].reduce((a,c)=>(a*31+c.charCodeAt(0))%360,7);
 
 let allRuns=[],allRewards=[],resultFilter='All',icons=[],mapIcons=[];
 const HIDDEN=/holiday star/i; // removed from the game
+const UNREAD=/^unknown$|test notification/i; // runs whose map the parser couldn't read
 
 // Fandom wiki icons (public/assets/items) matched by name; fan-made SVG as fallback.
 const svgFallback=[['summer pearl','pearl'],['gem','gem'],['money','coin'],['ore','ore'],['remnant','shard'],['portal','portal'],['potion','potion'],['talisman','talisman'],['sprig','sprig'],['tome','tome'],['ring','ring']];
@@ -43,14 +44,17 @@ function renderTiles(){
 }
 function renderRewards(){
   const rest=allRewards.filter(([n])=>slotOf(n)<0);
-  $('itemCount').textContent=allRewards.length+' ชนิด';
+  $('itemCount').textContent=rest.length+' ชนิด';
+  $('items').style.display=$('rewards').style.display=rest.length?'':'none'; // nothing besides the 4 top tiles => hide the section
   $('rewards').innerHTML=rest.map(([n,c])=>`<div class="item" style="--c:hsl(${hue(n)} 70% 62%)"><strong>${compact(c)}</strong><img loading="lazy" src="${asset(n)}" alt=""><span title="${esc(n)}">${esc(n)}</span></div>`).join('')||'<div class="skeleton">ยังไม่มีไอเทม</div>';
 }
 function thumb(map){const img=mapImg(map);return `<div class="thumb" style="--h:${hue(map)};${img?`background-image:linear-gradient(#0000 35%,#000b),url('${img}')`:''}"><span>${esc(map||'Unknown')}</span></div>`}
 function renderRuns(){
   const q=$('search').value.toLowerCase();
   // Unknown = map the parser couldn't read; hidden from the timeline but still counted in stats/rewards.
-  const list=allRuns.filter(r=>!/^unknown$|test notification/i.test(r.map)&&(resultFilter==='All'||r.result===resultFilter)&&`${r.map} ${r.player}`.toLowerCase().includes(q));
+  const nHidden=allRuns.filter(r=>UNREAD.test(r.map)).length;
+  $('hiddenNote').textContent=nHidden?`รวม ${nHidden} รอบที่อ่านชื่อแมพไม่ได้ (ไม่แสดงในไทม์ไลน์ · จาก 100 รอบล่าสุด)`:'';
+  const list=allRuns.filter(r=>!UNREAD.test(r.map)&&(resultFilter==='All'||r.result===resultFilter)&&`${r.map} ${r.player}`.toLowerCase().includes(q));
   const wins=list.filter(r=>r.result==='Victory').length;
   $('runCount').textContent=`${list.length} แมตช์ · ชนะ ${wins} (โหลดล่าสุด 100 รายการ)`;
   let lastDay='';
