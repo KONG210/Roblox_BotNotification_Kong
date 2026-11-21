@@ -10,7 +10,9 @@ const hue=s=>[...String(s)].reduce((a,c)=>(a*31+c.charCodeAt(0))%360,7);
 
 let allRuns=[],allRewards=[],resultFilter='All',icons=[],mapIcons=[];
 const HIDDEN=/holiday star/i; // removed from the game
-const UNREAD=/^unknown$|test notification/i; // runs whose map the parser couldn't read
+// Hidden from the timeline: test pings, and runs whose map the parser couldn't read.
+// Defeats are always shown (a lost run is real even when its map name is unreadable).
+const UNREAD={test:r=>/test notification/i.test(r.map)||(/^unknown$/i.test(r.map)&&r.result!=='Defeat')};
 
 // Fandom wiki icons (public/assets/items) matched by name; fan-made SVG as fallback.
 const svgFallback=[['summer pearl','pearl'],['gem','gem'],['money','coin'],['ore','ore'],['remnant','shard'],['portal','portal'],['potion','potion'],['talisman','talisman'],['sprig','sprig'],['tome','tome'],['ring','ring']];
@@ -52,9 +54,9 @@ function thumb(map){const img=mapImg(map);return `<div class="thumb" style="--h:
 function renderRuns(){
   const q=$('search').value.toLowerCase();
   // Unknown = map the parser couldn't read; hidden from the timeline but still counted in stats/rewards.
-  const nHidden=allRuns.filter(r=>UNREAD.test(r.map)).length;
+  const nHidden=allRuns.filter(UNREAD.test).length;
   $('hiddenNote').textContent=nHidden?`รวม ${nHidden} รอบที่อ่านชื่อแมพไม่ได้ (ไม่แสดงในไทม์ไลน์ · จาก 100 รอบล่าสุด)`:'';
-  const list=allRuns.filter(r=>!UNREAD.test(r.map)&&(resultFilter==='All'||r.result===resultFilter)&&`${r.map} ${r.player}`.toLowerCase().includes(q));
+  const list=allRuns.filter(r=>!UNREAD.test(r)&&(resultFilter==='All'||r.result===resultFilter)&&`${r.map} ${r.player}`.toLowerCase().includes(q));
   const wins=list.filter(r=>r.result==='Victory').length;
   $('runCount').textContent=`${list.length} แมตช์ · ชนะ ${wins} (โหลดล่าสุด 100 รายการ)`;
   let lastDay='';
