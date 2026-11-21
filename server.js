@@ -67,18 +67,20 @@ async function saveMessage(msg) {
   if (process.env.DISCORD_WEBHOOK_ID && msg.webhookId !== process.env.DISCORD_WEBHOOK_ID) return;
   if (msg.createdTimestamp <= clearedAt) return;
   const r = parseMessage(msg);
+  if (/test notification/i.test(r.map)) return; // test pings from the Roblox script are not real runs
   if (r.result === 'Unknown' && !r.rewards.length) return;
   const result = await pool.query(`INSERT INTO runs (id,created_at,player,result,map,mode,wave,duration,difficulty,weather,rewards,balances,raw)
     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) ON CONFLICT (id) DO NOTHING`,
     [r.id,r.created_at,r.player,r.result,r.map,r.mode,r.wave,r.duration,r.difficulty,r.weather,JSON.stringify(r.rewards),r.balances,r.raw]);
   if (result.rowCount) io.emit('updated');
 }
+const REAL_RUN = "COALESCE(map,'') NOT ILIKE '%test notification%'"; // also hides test pings already stored
 app.get('/api/dashboard', async (_,res) => {
   try {
     const [rows, stats, rewards] = await Promise.all([
-      pool.query('SELECT * FROM runs ORDER BY created_at DESC LIMIT 100'),
-      pool.query(`SELECT COUNT(*)::int AS total, COUNT(*) FILTER (WHERE result='Victory')::int AS wins, COUNT(*) FILTER (WHERE result='Defeat')::int AS losses FROM runs`),
-      pool.query('SELECT rewards FROM runs')]);
+      pool.query(`SELECT * FROM runs WHERE ${REAL_RUN} ORDER BY created_at DESC LIMIT 100`),
+      pool.query(`SELECT COUNT(*)::int AS total, COUNT(*) FILTER (WHERE result='Victory')::int AS wins, COUNT(*) FILTER (WHERE result='Defeat')::int AS losses FROM runs WHERE ${REAL_RUN}`),
+      pool.query(`SELECT rewards FROM runs WHERE ${REAL_RUN}`)]);
     const totals = {};
     for (const row of rewards.rows) for (const reward of row.rewards || []) totals[reward.item] = (totals[reward.item] || 0) + reward.amount;
     res.json({stats:stats.rows[0], totals, runs:rows.rows, lastReport:rows.rows[0]?.created_at || null});

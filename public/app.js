@@ -39,7 +39,8 @@ function renderRewards(){
 function thumb(map){const img=mapImg(map);return `<div class="thumb" style="--h:${hue(map)};${img?`background-image:linear-gradient(#0000 35%,#000b),url('${img}')`:''}"><span>${esc(map||'Unknown')}</span></div>`}
 function renderRuns(){
   const q=$('search').value.toLowerCase();
-  const list=allRuns.filter(r=>(resultFilter==='All'||r.result===resultFilter)&&`${r.map} ${r.player}`.toLowerCase().includes(q));
+  // Unknown = map the parser couldn't read; hidden from the timeline but still counted in stats/rewards.
+  const list=allRuns.filter(r=>!/^unknown$|test notification/i.test(r.map)&&(resultFilter==='All'||r.result===resultFilter)&&`${r.map} ${r.player}`.toLowerCase().includes(q));
   const wins=list.filter(r=>r.result==='Victory').length;
   $('runCount').textContent=`${list.length} แมตช์ · ชนะ ${wins} (โหลดล่าสุด 100 รายการ)`;
   let lastDay='';
