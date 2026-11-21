@@ -14,3 +14,7 @@ White and ice-blue responsive dashboard. Uses the same Express, Discord, Postgre
 - Graph displays recent 40 runs, not 7-day aggregates.
 - Socket connected does not prove Roblox is running. Render Free may sleep.
 - Rotate any previously shared Discord tokens, webhook secrets, database passwords, and dashboard passwords.
+
+
+## Clean V4 hotfix
+Frontend JavaScript is in `public/app.js`; HTML in `public/index.html`; styles in `public/style.css`. Removed the missing `clock` element access. API fetch runs independently of Socket.IO and retries every 60 seconds. Upload the entire `public/` folder to GitHub and wait for Render to redeploy.
