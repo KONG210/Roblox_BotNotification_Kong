@@ -28,8 +28,18 @@ const slotOf=n=>slots.findIndex(s=>s.re.test(n));
 const mnorm=s=>String(s).toLowerCase().replace(/[^a-z0-9]/g,'');
 fetch('/assets/maps/manifest.json').then(r=>r.json()).then(m=>{mapIcons=Object.entries(m).map(([n,f])=>[mnorm(n),f]);render()}).catch(()=>{});
 function mapImg(name){const full=mnorm(name),base=mnorm(String(name).split('(')[0]);const w=mapIcons.find(([n])=>n===full)||mapIcons.find(([n])=>n===base);return w?'/assets/maps/'+w[1]:''}
+// Top tiles show the in-game balance reported by the newest webhook message (includes pre-dashboard history).
+// Gems/Gold come from the "Balance" line (🪙 / 💎); other items from the "→ total" of their newest reward.
+// shortcut: falls back to summed rewards if the balance can't be parsed.
+const balNum=(b,emoji)=>{const m=String(b||'').match(new RegExp(emoji+'\\s*([\\d,]+)'));return m?Number(m[1].replace(/,/g,'')):null};
+function balanceOf(s){
+  const e={Gems:'💎',Gold:'🪙'}[s.icon];
+  if(e){const v=balNum(allRuns[0]?.balances,e);if(v!=null)return v}
+  for(const r of allRuns){const x=(r.rewards||[]).find(x=>s.re.test(x.item)&&x.total!=null);if(x)return x.total}
+  return allRewards.filter(([n])=>s.re.test(n)).reduce((a,[,v])=>a+v,0);
+}
 function renderTiles(){
-  $('tiles').innerHTML=slots.map(s=>{const c=allRewards.filter(([n])=>s.re.test(n)).reduce((a,[,v])=>a+v,0);return `<div class="tile"><img src="${asset(s.icon)}" alt=""><div><b>${fmt(c)}</b><span>${s.label}</span></div></div>`}).join('');
+  $('tiles').innerHTML=slots.map(s=>{const c=balanceOf(s);return `<div class="tile"><img src="${asset(s.icon)}" alt=""><div><b>${fmt(c)}</b><span>${s.label}</span></div></div>`}).join('');
 }
 function renderRewards(){
   const rest=allRewards.filter(([n])=>slotOf(n)<0);
@@ -88,7 +98,10 @@ async function load(){
     const data=await res.json(),s=data.stats||{},r0=(data.runs||[])[0];
     // Normalize rows already stored with "## " prefixes; player can be "Name · Level 245 [..]".
     allRuns=(data.runs||[]).map(r=>({...r,map:String(r.map??'').replace(/^[#\s]+/,'').trim(),player:String(r.player??'').split(' · ')[0].trim()}));
-    allRewards=Object.entries(data.totals||{}).filter(([n])=>!HIDDEN.test(n)).sort((a,b)=>b[1]-a[1]);
+    // "(Limited)" variants are the same item; merge their counts.
+    const merged={};
+    for(const [n,v] of Object.entries(data.totals||{})){if(HIDDEN.test(n))continue;const k=n.replace(/\s*\(limited\)\s*$/i,'');merged[k]=(merged[k]||0)+v}
+    allRewards=Object.entries(merged).sort((a,b)=>b[1]-a[1]);
     const total=Number(s.total),rate=total?100*Number(s.wins)/total:0;
     $('total').textContent=fmt(s.total);$('wins').textContent=fmt(s.wins);$('losses').textContent=fmt(s.losses);
     $('rate').textContent=rate.toFixed(1)+'%';$('rateSub').textContent=`${fmt(s.wins)} / ${fmt(s.total)}`;$('rateBar').style.width=rate+'%';
