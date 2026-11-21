@@ -98,6 +98,12 @@ async function load(){
 $('search').oninput=renderRuns;
 $('chips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;resultFilter=b.dataset.f;document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));renderRuns()};
 $('refresh').onclick=load;
+$('clear').onclick=async()=>{
+  if(!confirm('ล้างประวัติและสถิติทั้งหมด? ย้อนกลับไม่ได้'))return;
+  if(!confirm('ยืนยันอีกครั้ง: ข้อมูลทุกรอบจะถูกลบถาวร'))return;
+  try{const r=await fetch('/api/clear',{method:'POST',headers:{'x-confirm':'clear'}});if(!r.ok)throw Error('HTTP '+r.status);await load()}
+  catch(e){alert('ล้างไม่สำเร็จ: '+e.message)}
+};
 
 const socket=io();
 socket.on('connect',()=>{$('connection').textContent='Connected';$('dot').style.background='#4ade80';load()});

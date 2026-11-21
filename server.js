@@ -10,6 +10,7 @@ const server = http.createServer(app);
 const { Server } = require('socket.io');
 const io = new Server(server);
 const port = Number(process.env.PORT) || 3030;
+let clearedAt = 0; // ms timestamp of last history clear; older Discord messages are ignored so they don't come back on restart
 const pool = new Pool({connectionString: process.env.DATABASE_URL, ssl: process.env.DATABASE_SSL === 'false' ? false : {rejectUnauthorized: false}});
 const password = process.env.DASHBOARD_PASSWORD;
 if (!process.env.DATABASE_URL || !password || !process.env.DISCORD_BOT_TOKEN || !process.env.DISCORD_CHANNEL_ID) {
@@ -64,6 +65,7 @@ function parseMessage(msg) {
 async function saveMessage(msg) {
   if (msg.channelId !== process.env.DISCORD_CHANNEL_ID || !msg.webhookId) return;
   if (process.env.DISCORD_WEBHOOK_ID && msg.webhookId !== process.env.DISCORD_WEBHOOK_ID) return;
+  if (msg.createdTimestamp <= clearedAt) return;
   const r = parseMessage(msg);
   if (r.result === 'Unknown' && !r.rewards.length) return;
   const result = await pool.query(`INSERT INTO runs (id,created_at,player,result,map,mode,wave,duration,difficulty,weather,rewards,balances,raw)
@@ -82,12 +84,26 @@ app.get('/api/dashboard', async (_,res) => {
     res.json({stats:stats.rows[0], totals, runs:rows.rows, lastReport:rows.rows[0]?.created_at || null});
   } catch(e) { console.error(e); res.status(500).json({error:'Database unavailable'}); }
 });
+// Behind the Basic-auth middleware above. The custom header blocks cross-site form posts (CSRF).
+app.post('/api/clear', async (req,res) => {
+  if (req.get('x-confirm') !== 'clear') return res.status(400).json({error:'Missing confirmation'});
+  try {
+    const now = Date.now();
+    await pool.query("INSERT INTO meta (key,value) VALUES ('cleared_at',$1) ON CONFLICT (key) DO UPDATE SET value=EXCLUDED.value", [String(now)]);
+    clearedAt = now;
+    await pool.query('TRUNCATE runs');
+    io.emit('updated');
+    res.json({ok:true});
+  } catch(e) { console.error(e); res.status(500).json({error:'Clear failed'}); }
+});
 app.use(express.static(path.join(__dirname,'public')));
 async function main() {
   await pool.query(`CREATE TABLE IF NOT EXISTS runs (
     id TEXT PRIMARY KEY, created_at TIMESTAMPTZ NOT NULL, player TEXT, result TEXT, map TEXT, mode TEXT,
     wave INTEGER, duration TEXT, difficulty TEXT, weather TEXT, rewards JSONB NOT NULL DEFAULT '[]'::jsonb,
     balances TEXT, raw TEXT NOT NULL)`);
+  await pool.query('CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT NOT NULL)');
+  clearedAt = Number((await pool.query("SELECT value FROM meta WHERE key='cleared_at'")).rows[0]?.value) || 0;
   const client = new Client({intents:[GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent]});
   client.on(Events.MessageCreate, msg => saveMessage(msg).catch(console.error));
   client.once(Events.ClientReady, async () => {

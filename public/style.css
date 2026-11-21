@@ -108,3 +108,5 @@ h2,h3,p{margin:0}
 img[src$="sky-portal.png"]{filter:grayscale(1) brightness(1.9) contrast(.85)}
 .age{font-size:12px;color:var(--muted);margin:-6px 0 -2px 2px}
 .age.stale{color:var(--red);font-weight:600}
+.danger{background:none;border:1px solid #f8717166;color:var(--red);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;margin-top:4px}
+.danger:hover{background:#f871711a}
