@@ -9,7 +9,7 @@ White and ice-blue responsive dashboard. Uses the same Express, Discord, Postgre
 4. Open the same Render URL and sign in.
 
 ## Accuracy and image rights
-- The included SVG icons are fan-made illustrations, **not** actual in-game Anime Adventures item icons. No unverified game assets are represented as official. Replace `public/assets/*.svg` with authorized images of the corresponding item if you have them.
+- Item icons in `public/assets/items/` were downloaded from the Anime Adventures Wiki (Fandom) and belong to their respective owners; items with no wiki match fall back to the fan-made SVGs in `public/assets/`.
 - Item counts are accumulated rewards, not current inventory.
 - Graph displays recent 40 runs, not 7-day aggregates.
 - Socket connected does not prove Roblox is running. Render Free may sleep.

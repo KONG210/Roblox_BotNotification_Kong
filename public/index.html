@@ -1,5 +1,71 @@
-<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#d9edff"><title>Anime Adventures • Ice Blue Farm Dashboard</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="/style.css"></head><body>
-<aside class="sidebar"><div class="logo"><div class="logo-icon">AA</div><div><b>Anime<br>Adventures</b><small>FARM DASHBOARD</small></div></div><nav><button class="nav active" data-jump="overview">⌂ <span>หน้าหลัก</span></button><button class="nav" data-jump="history">▤ <span>ประวัติการฟาร์ม</span></button><button class="nav" data-jump="activity">▥ <span>สถิติ & กราฟ</span></button><button class="nav" data-jump="items">⬡ <span>ไอเทมทั้งหมด</span></button></nav><div class="sidebar-bottom"><div class="discord-mark">◉</div><div><b>Discord Reader</b><small>ข้อมูลซิงก์อัตโนมัติ</small></div></div></aside>
-<main id="overview"><header class="hero"><div class="hero-shine"></div><div class="hero-left"><div class="connected"><span class="dot" id="dot"></span><span id="connection">Connecting...</span></div><p id="latest">กำลังโหลดรายงานล่าสุด...</p></div><div class="hero-title"><div class="sparkles">✦ &nbsp; ✧ &nbsp; ✦</div><h1>Anime <em>Adventures</em></h1><div class="hero-subtitle">Farm Dashboard</div><p>ROBLOX FARM TRACKER <span>◆</span> DISCORD WEBHOOK <span>◆</span> LIVE UPDATES</p></div><button id="refresh" class="refresh">↻ รีเฟรชข้อมูล</button></header>
-<section class="stats"><div class="stat"><div class="stat-icon blue">⚔</div><div><label>Total Runs</label><strong id="total">—</strong><small>จำนวนรอบทั้งหมด</small></div></div><div class="stat"><div class="stat-icon gold">🏆</div><div><label>Victory</label><strong id="wins" class="green-text">—</strong><small>ชนะทั้งหมด</small></div></div><div class="stat"><div class="stat-icon red">☠</div><div><label>Defeat</label><strong id="losses" class="red-text">—</strong><small>แพ้ทั้งหมด</small></div></div><div class="stat"><div class="stat-icon blue">↗</div><div><label>Win Rate</label><strong id="rate">—</strong><small>อัตราชนะสะสม</small></div></div></section>
-<div class="columns"><section class="panel items-panel" id="items"><div class="panelhead"><div><h2>💎 ไอเทมที่ได้รับทั้งหมด</h2><p>รางวัลสะสมจากการฟาร์ม</p></div><button id="moreItems" class="small-btn">ดูทั้งหมด</button></div><div class="rewardgrid" id="rewards"><div class="skeleton">กำลังโหลดไอเทม...</div></div><p class="disclaimer">ภาพไอเทมเป็นภาพประกอบที่สร้างขึ้น ไม่ใช่ไฟล์ไอคอนต้นฉบับจากเกม • จำนวนคือรางวัลสะสม ไม่ใช่ยอดคงเหลือในกระเป๋า</p></section><div class="right-col"><section class="panel" id="activity"><div class="panelhead"><div><h2>▥ สถิติการฟาร์ม</h2><p>ผลการเล่น 40 รายงานล่าสุด</p></div><span class="legend"><i></i> Victory <i></i> Defeat</span></div><div class="chart" id="chart"><div class="skeleton">กำลังโหลดกราฟ...</div></div><div class="chartlabel"><span>เก่ากว่า</span><span>ล่าสุด</span></div></section><section class="panel history-panel" id="history"><div class="panelhead"><div><h2>♟ ประวัติการฟาร์มล่าสุด</h2><p>อัปเดตจาก Discord โดยอัตโนมัติ</p></div></div><div class="controls"><input id="search" placeholder="⌕ ค้นหาแมพ / ผู้เล่น..." aria-label="ค้นหาแมพ"><select id="filter" aria-label="กรองผล"><option value="All">ทั้งหมด</option><option value="Victory">Victory</option><option value="Defeat">Defeat</option></select></div><div id="runs" class="runlist"><div class="skeleton">กำลังโหลดประวัติ...</div></div><div class="notice" id="runCount"></div></section><section class="panel sync-panel"><h2>✧ สถานะการซิงก์</h2><div><span>รายงานล่าสุด</span><b id="last">—</b></div><div><span>ผู้เล่น</span><b id="player">—</b></div><div><span>แมพล่าสุด</span><b id="map">—</b></div><p class="disclaimer">Connected หมายถึงเว็บเชื่อมต่อเซิร์ฟเวอร์ ไม่ได้ยืนยันว่าบอท Roblox กำลังฟาร์มอยู่</p></section></div></div><footer>FAN-MADE ANIME ADVENTURES FARM DASHBOARD • NOT AFFILIATED WITH ROBLOX OR THE GAME DEVELOPERS</footer></main><script src="/socket.io/socket.io.js"></script><script defer src="/app.js"></script></body></html>
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0c11">
+<title>Anime Adventures • Farm Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="app">
+
+<aside class="side">
+  <div class="side-head">
+    <div class="brand"><span class="mark">AA</span><div><b>Anime Adventures</b><small>Farm Dashboard</small></div></div>
+    <button id="refresh" class="icon-btn" title="รีเฟรช" aria-label="รีเฟรช">↻</button>
+  </div>
+
+  <div class="side-scroll">
+    <div class="who"><span class="pill"><span class="dot" id="dot"></span><span id="connection">Connecting...</span></span><span id="player" class="player">—</span></div>
+
+    <div id="age" class="age"></div>
+
+    <div class="tiles" id="tiles"></div>
+
+    <div class="kpis">
+      <div class="kpi wide"><label>อัตราชนะ</label><strong id="rate">—</strong><small id="rateSub"></small><div class="bar"><i id="rateBar"></i></div></div>
+      <div class="kpi"><label>รอบทั้งหมด</label><strong id="total">—</strong></div>
+      <div class="kpi"><label>ชนะ</label><strong id="wins" class="green-text">—</strong></div>
+      <div class="kpi"><label>แพ้</label><strong id="losses" class="red-text">—</strong></div>
+    </div>
+
+    <div class="card" id="ratesCard" hidden>
+      <div class="card-h"><b>อัตราฟาร์มต่อชั่วโมง</b><span id="rateNote" class="muted small"></span></div>
+      <div class="tiles" id="rates"></div>
+    </div>
+
+    <div class="card" id="activity">
+      <div class="card-h"><b>ผลการเล่น 40 รอบล่าสุด</b><span class="legend"><i></i>ชนะ <i></i>แพ้</span></div>
+      <div class="chart" id="chart"></div>
+    </div>
+
+    <div class="sec-h" id="items"><b>ของที่ได้ทั้งหมด</b><span id="itemCount" class="muted"></span></div>
+    <div class="rewardgrid" id="rewards"><div class="skeleton">กำลังโหลดไอเทม...</div></div>
+    <p class="disclaimer">ไอคอนจาก Anime Adventures Wiki (Fandom) • จำนวนคือรางวัลสะสม ไม่ใช่ยอดคงเหลือในกระเป๋า</p>
+  </div>
+</aside>
+
+<section class="timeline" id="history">
+  <div class="tl-head">
+    <div><h2>ไทม์ไลน์การฟาร์ม</h2><span id="runCount" class="muted"></span></div>
+    <div class="tl-ctl">
+      <input id="search" placeholder="ค้นหาแมพ / ผู้เล่น..." aria-label="ค้นหา">
+      <div class="chips" id="chips">
+        <button class="chip on" data-f="All">ทั้งหมด</button>
+        <button class="chip" data-f="Victory">ชนะ</button>
+        <button class="chip" data-f="Defeat">แพ้</button>
+      </div>
+    </div>
+  </div>
+  <div id="runs" class="runlist"><div class="skeleton">กำลังโหลดประวัติ...</div></div>
+</section>
+
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script defer src="/app.js"></script>
+</body>
+</html>
