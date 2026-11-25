@@ -1,72 +1,62 @@
 <!doctype html>
-<html lang="th">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0a0c11">
-<title>Anime Adventures • Farm Dashboard</title>
+<meta name="theme-color" content="#eaf5ff">
+<meta name="description" content="A live Anime Adventures farm dashboard.">
+<title>Anime Adventures | Farm Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <div class="app">
-
 <aside class="side">
   <div class="side-head">
-    <div class="brand"><span class="mark">AA</span><div><b>Anime Adventures</b><small>Farm Dashboard</small></div></div>
-    <button id="refresh" class="icon-btn" title="รีเฟรช" aria-label="รีเฟรช">↻</button>
+    <div class="brand"><span class="mark">AA</span><div><b>Anime Adventures</b><small>FARM DASHBOARD</small></div></div>
+    <button id="refresh" class="icon-btn" title="Refresh dashboard" aria-label="Refresh dashboard">↻</button>
   </div>
-
   <div class="side-scroll">
     <div class="who"><span class="pill"><span class="dot" id="dot"></span><span id="connection">Connecting...</span></span><span id="player" class="player">—</span></div>
-
     <div id="age" class="age"></div>
-
     <div class="tiles" id="tiles"></div>
-
-    <div class="kpis">
-      <div class="kpi wide"><label>อัตราชนะ</label><strong id="rate">—</strong><small id="rateSub"></small><div class="bar"><i id="rateBar"></i></div></div>
-      <div class="kpi"><label>รอบทั้งหมด</label><strong id="total">—</strong></div>
-      <div class="kpi"><label>ชนะ</label><strong id="wins" class="green-text">—</strong></div>
-      <div class="kpi"><label>แพ้</label><strong id="losses" class="red-text">—</strong></div>
-    </div>
-
+    <section class="kpis" aria-label="Farm statistics">
+      <div class="kpi wide"><div class="kpi-row"><label>Win rate</label><span id="rateSub" class="muted small"></span></div><strong id="rate">—</strong><div class="bar"><i id="rateBar"></i></div></div>
+      <div class="kpi"><label>Total runs</label><strong id="total">—</strong></div>
+      <div class="kpi"><label>Victories</label><strong id="wins" class="green-text">—</strong></div>
+      <div class="kpi"><label>Defeats</label><strong id="losses" class="red-text">—</strong></div>
+    </section>
     <p id="hiddenNote" class="muted small"></p>
-
-    <div class="card" id="ratesCard" hidden>
-      <div class="card-h"><b>อัตราฟาร์มต่อชั่วโมง</b><span id="rateNote" class="muted small"></span></div>
+    <section class="card" id="ratesCard" hidden>
+      <div class="card-h"><b>Farming pace</b><span id="rateNote" class="muted small"></span></div>
       <div class="tiles" id="rates"></div>
-    </div>
-
-    <div class="card" id="activity">
-      <div class="card-h"><b>ผลการเล่น 40 รอบล่าสุด</b><span class="legend"><i></i>ชนะ <i></i>แพ้</span></div>
+    </section>
+    <section class="card" id="activity">
+      <div class="card-h"><b>Last 40 runs</b><span class="legend"><i></i>Wins <i></i>Losses</span></div>
       <div class="chart" id="chart"></div>
-    </div>
-
-    <div class="sec-h" id="items"><b>ของที่ได้ทั้งหมด</b><span id="itemCount" class="muted"></span></div>
-    <div class="rewardgrid" id="rewards"><div class="skeleton">กำลังโหลดไอเทม...</div></div>
-    <button id="clear" class="danger">ล้างประวัติทั้งหมด</button>
-    <p class="disclaimer">ไอคอนจาก Anime Adventures Wiki (Fandom) • 4 ช่องบนคือยอดคงเหลือล่าสุดจากรายงาน Discord • "ของที่ได้ทั้งหมด" คือรางวัลสะสมตั้งแต่ล้างประวัติ</p>
+    </section>
+    <div class="sec-h" id="items"><b>Reward inventory</b><span id="itemCount" class="muted"></span></div>
+    <div class="rewardgrid" id="rewards"><div class="skeleton">Loading rewards...</div></div>
+    <button id="clear" class="danger">Clear history</button>
+    <p class="disclaimer">Top balances come from your latest Discord report. Reward totals are collected since the last history clear. Item icons are fan-made references.</p>
   </div>
 </aside>
-
 <section class="timeline" id="history">
-  <div class="tl-head">
-    <div><h2>ไทม์ไลน์การฟาร์ม</h2><span id="runCount" class="muted"></span></div>
+  <header class="tl-head">
+    <div class="tl-title"><span class="eyebrow">YOUR ADVENTURE LOG</span><h1>Farm timeline</h1><span id="runCount" class="muted"></span></div>
     <div class="tl-ctl">
-      <input id="search" placeholder="ค้นหาแมพ / ผู้เล่น..." aria-label="ค้นหา">
-      <div class="chips" id="chips">
-        <button class="chip on" data-f="All">ทั้งหมด</button>
-        <button class="chip" data-f="Victory">ชนะ</button>
-        <button class="chip" data-f="Defeat">แพ้</button>
+      <label class="search"><span aria-hidden="true">⌕</span><input id="search" placeholder="Search maps or players..." aria-label="Search maps or players"></label>
+      <div class="chips" id="chips" aria-label="Filter runs">
+        <button class="chip on" data-f="All">All</button>
+        <button class="chip" data-f="Victory">Wins</button>
+        <button class="chip" data-f="Defeat">Losses</button>
       </div>
     </div>
-  </div>
-  <div id="runs" class="runlist"><div class="skeleton">กำลังโหลดประวัติ...</div></div>
+  </header>
+  <div id="runs" class="runlist"><div class="skeleton">Loading run history...</div></div>
 </section>
-
 </div>
 <script src="/socket.io/socket.io.js"></script>
 <script defer src="/app.js"></script>
