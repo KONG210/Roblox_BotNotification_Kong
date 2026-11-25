@@ -95,6 +95,100 @@ function updateFilterOptions(id, values, label) {
     uniqueValues.map((value) => '<option value="' + escapeHTML(value) + '">' +
       escapeHTML(value) + '</option>').join("");
   select.value = uniqueValues.includes(previous) ? previous : "all";
+  renderCustomSelect(id);
+}
+
+function renderCustomSelect(id) {
+  const select = $(id);
+  const wrapper = document.querySelector('[data-custom-select="' + id + '"]');
+  if (!select || !wrapper) return;
+  const trigger = wrapper.querySelector(".select-trigger");
+  const text = wrapper.querySelector(".select-trigger-text");
+  const menu = wrapper.querySelector(".select-menu");
+  const selected = select.options[select.selectedIndex];
+  text.textContent = selected?.textContent || "Choose an option";
+  menu.innerHTML = [...select.options].map((option) =>
+    '<div class="select-option" role="option" tabindex="-1" data-value="' +
+    escapeHTML(option.value) + '" aria-selected="' + String(option.value === select.value) + '">' +
+    escapeHTML(option.textContent) + '</div>'
+  ).join("");
+  trigger.setAttribute("aria-expanded", String(!menu.hidden));
+}
+
+function closeCustomSelect(wrapper, returnFocus = false) {
+  const trigger = wrapper.querySelector(".select-trigger");
+  const menu = wrapper.querySelector(".select-menu");
+  menu.hidden = true;
+  trigger.setAttribute("aria-expanded", "false");
+  if (returnFocus) trigger.focus();
+}
+
+function openCustomSelect(wrapper) {
+  document.querySelectorAll(".custom-select").forEach((other) => {
+    if (other !== wrapper) closeCustomSelect(other);
+  });
+  const menu = wrapper.querySelector(".select-menu");
+  const select = $(wrapper.dataset.customSelect);
+  menu.hidden = false;
+  wrapper.querySelector(".select-trigger").setAttribute("aria-expanded", "true");
+  const options = [...menu.querySelectorAll(".select-option")];
+  const active = options.find((option) => option.dataset.value === select.value) || options[0];
+  active?.focus({ preventScroll: true });
+  active?.scrollIntoView({ block: "nearest" });
+}
+
+function initCustomSelects() {
+  document.querySelectorAll(".custom-select").forEach((wrapper) => {
+    const id = wrapper.dataset.customSelect;
+    const select = $(id);
+    const trigger = wrapper.querySelector(".select-trigger");
+    const menu = wrapper.querySelector(".select-menu");
+    renderCustomSelect(id);
+    trigger.addEventListener("click", () => {
+      if (menu.hidden) openCustomSelect(wrapper);
+      else closeCustomSelect(wrapper);
+    });
+    trigger.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        openCustomSelect(wrapper);
+      }
+    });
+    menu.addEventListener("click", (event) => {
+      const option = event.target.closest(".select-option");
+      if (!option) return;
+      select.value = option.dataset.value;
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+      closeCustomSelect(wrapper, true);
+    });
+    menu.addEventListener("keydown", (event) => {
+      const options = [...menu.querySelectorAll(".select-option")];
+      const index = options.indexOf(document.activeElement);
+      let next = index;
+      if (event.key === "ArrowDown") next = Math.min(options.length - 1, index + 1);
+      else if (event.key === "ArrowUp") next = Math.max(0, index - 1);
+      else if (event.key === "Home") next = 0;
+      else if (event.key === "End") next = options.length - 1;
+      else if (event.key === "Escape") {
+        event.preventDefault();
+        closeCustomSelect(wrapper, true);
+        return;
+      } else if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        document.activeElement.click();
+        return;
+      } else return;
+      event.preventDefault();
+      options[next]?.focus();
+      options[next]?.scrollIntoView({ block: "nearest" });
+    });
+    select.addEventListener("change", () => renderCustomSelect(id));
+  });
+  document.addEventListener("pointerdown", (event) => {
+    document.querySelectorAll(".custom-select").forEach((wrapper) => {
+      if (!wrapper.contains(event.target)) closeCustomSelect(wrapper);
+    });
+  });
 }
 
 function balanceFromReport(slot) {
@@ -208,13 +302,11 @@ function renderRuns() {
 
     const map = run.map || "Unknown map";
     const image = mapImage(map);
-    const background = image
-      ? 'background-image:linear-gradient(0deg,rgba(21,48,69,.74),rgba(21,48,69,.04) 76%),url(&quot;' +
-        image + '&quot;)'
-      : "";
-    const mapArt = '<div class="map-art" role="img" aria-label="' + escapeHTML(map) +
-      '" style="--map-hue:' + hueFor(map) + ';' + background + '"><span>' +
-      escapeHTML(map) + '</span></div>';
+    const mapArt = '<div class="map-art ' + (image ? 'has-map-image' : 'no-map-image') +
+      '" role="img" aria-label="' + escapeHTML(image ? map : map + ', map preview unavailable') +
+      '" style="--map-hue:' + hueFor(map) + '">' +
+      (image ? '<img class="map-preview-image" src="' + escapeHTML(image) + '" alt="" aria-hidden="true">' : '') + '<span>' +
+      escapeHTML(map) + '</span>' + (image ? '' : '<small class="map-preview-note">Map preview unavailable</small>') + '</div>';
     const resultLabel = isVictory ? "Victory" : "Defeat";
     const resultClass = isVictory ? "win" : "loss";
     const tags = [
@@ -310,6 +402,18 @@ function attachImageFallbacks(root) {
   root.querySelectorAll("img").forEach((image) => {
     image.onerror = () => {
       image.onerror = null;
+      if (image.classList.contains("map-preview-image")) {
+        const map = image.parentElement;
+        image.remove();
+        map.classList.remove("has-map-image");
+        map.classList.add("no-map-image");
+        map.setAttribute("aria-label", map.querySelector("span")?.textContent + ", map preview unavailable");
+        const note = document.createElement("small");
+        note.className = "map-preview-note";
+        note.textContent = "Map preview unavailable";
+        map.append(note);
+        return;
+      }
       image.src = "/assets/chest.svg";
     };
   });
@@ -387,6 +491,7 @@ async function loadManifests() {
 }
 
 $("search").addEventListener("input", renderRuns);
+initCustomSelects();
 $("periodFilter").addEventListener("change", loadDashboard);
 $("mapFilter").addEventListener("change", renderRuns);
 $("modeFilter").addEventListener("change", renderRuns);
