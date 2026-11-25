@@ -36,12 +36,23 @@
         <p class="welcome-subtitle">A clear view of your runs, rewards, and reported balances.</p>
       </div>
       <div class="report-status">
-        <span class="status-label">Discord report status</span>
+        <span class="status-label"><i class="report-dot" id="reportDot"></i>Discord report activity</span>
         <strong id="age">Waiting for the first Discord report</strong>
         <span class="latest-player">Latest player <b id="player">—</b></span>
       </div>
     </section>
 
+    <div class="stats-toolbar">
+      <div><strong>Performance summary</strong><span>Choose the period for your totals and rewards.</span></div>
+      <label class="select-control period-control">
+        <span>Time range</span>
+        <select id="periodFilter" aria-label="Statistics time range">
+          <option value="all">All time</option>
+          <option value="today">Today</option>
+          <option value="7d">Last 7 days</option>
+        </select>
+      </label>
+    </div>
     <section class="stats-grid" aria-label="Farm statistics">
       <article class="stat-card stat-primary">
         <div class="stat-top"><span>Win rate</span><span class="stat-icon" aria-hidden="true">↗</span></div>
@@ -80,6 +91,18 @@
             <label class="search-box">
               <span aria-hidden="true">⌕</span>
               <input id="search" type="search" placeholder="Search maps or players..." aria-label="Search maps or players">
+            </label>
+            <label class="select-control filter-select">
+              <span class="sr-only">Filter by map</span>
+              <select id="mapFilter" aria-label="Filter by map">
+                <option value="all">All maps</option>
+              </select>
+            </label>
+            <label class="select-control filter-select">
+              <span class="sr-only">Filter by mode</span>
+              <select id="modeFilter" aria-label="Filter by mode">
+                <option value="all">All modes</option>
+              </select>
             </label>
             <div class="filter-chips" id="chips" role="group" aria-label="Filter runs by result">
               <button class="filter-chip on" type="button" data-f="All" aria-pressed="true">All</button>
@@ -141,7 +164,7 @@
 
     <footer class="page-footer">
       <span>Anime Adventures Farm Dashboard</span>
-      <span>Balances reflect the latest Discord report. Reward totals are collected since the last history clear.</span>
+      <span>Balances reflect the latest Discord report. Run totals and rewards follow the selected time range.</span>
     </footer>
   </main>
 
@@ -149,4 +172,3 @@
   <script defer src="/app.js"></script>
 </body>
 </html>
-

@@ -29,6 +29,10 @@ let mapIcons = [];
 let currentFilter = "All";
 let expandedRewards = false;
 let latestReportAt = null;
+let latestPlayer = null;
+let latestBalances = "";
+let latestRewards = [];
+let periodTotal = 0;
 
 const hiddenReward = /holiday star/i;
 const hiddenRun = {
@@ -42,7 +46,8 @@ const balanceSlots = [
   { pattern: /trait.*reroll/i, label: "Trait Reroll", icon: "Trait Reroll" }
 ];
 const fallbackIcons = [
-  ["summer pearl", "pearl"], ["gem", "gem"], ["money", "coin"], ["ore", "ore"],
+  ["summer pearl", "pearl"], ["dawn coin", "coin"], ["coin", "coin"],
+  ["gem", "gem"], ["money", "coin"], ["ore", "ore"],
   ["remnant", "shard"], ["portal", "portal"], ["potion", "potion"], ["talisman", "talisman"],
   ["sprig", "sprig"], ["tome", "tome"], ["ring", "ring"]
 ];
@@ -69,18 +74,39 @@ function mapImage(name) {
   return match ? "/assets/maps/" + match[1] : "";
 }
 
+function selectedPeriodStart() {
+  const period = $("periodFilter").value;
+  if (period === "today") {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    return start;
+  }
+  if (period === "7d") return new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  return null;
+}
+
+function updateFilterOptions(id, values, label) {
+  const select = $(id);
+  const previous = select.value;
+  const uniqueValues = [...new Set(values.filter(Boolean))].sort((left, right) =>
+    left.localeCompare(right)
+  );
+  select.innerHTML = '<option value="all">' + label + '</option>' +
+    uniqueValues.map((value) => '<option value="' + escapeHTML(value) + '">' +
+      escapeHTML(value) + '</option>').join("");
+  select.value = uniqueValues.includes(previous) ? previous : "all";
+}
+
 function balanceFromReport(slot) {
   if (slot.icon === "Gems" || slot.icon === "Gold") {
     const emoji = slot.icon === "Gems" ? "💎" : "🪙";
-    const match = String(runs[0]?.balances || "").match(new RegExp(emoji + "\\s*([\\d,]+)"));
+    const match = String(latestBalances || "").match(new RegExp(emoji + "\\s*([\\d,]+)"));
     if (match) return Number(match[1].replace(/,/g, ""));
   }
-  for (const run of runs) {
-    const reward = (run.rewards || []).find((entry) =>
-      slot.pattern.test(entry.item) && entry.total != null
-    );
-    if (reward) return Number(reward.total);
-  }
+  const latestReward = latestRewards.find((entry) =>
+    slot.pattern.test(entry.item) && entry.total != null
+  );
+  if (latestReward) return Number(latestReward.total);
   return rewards.filter(([name]) => slot.pattern.test(name))
     .reduce((total, [, amount]) => total + Number(amount || 0), 0);
 }
@@ -134,6 +160,8 @@ function renderEmptyState(title, message, hint) {
 
 function renderRuns() {
   const query = $("search").value.trim().toLowerCase();
+  const selectedMap = $("mapFilter").value;
+  const selectedMode = $("modeFilter").value;
   const unreadCount = runs.filter((run) => hiddenRun.test(run) || hiddenRun.unreadable(run)).length;
   $("hiddenNote").textContent = unreadCount
     ? unreadCount + " unreadable or test reports are hidden from the timeline."
@@ -143,11 +171,15 @@ function renderRuns() {
     !hiddenRun.test(run) &&
     !(hiddenRun.unreadable(run) && run.result !== "Defeat") &&
     (currentFilter === "All" || run.result === currentFilter) &&
+    (selectedMap === "all" || run.map === selectedMap) &&
+    (selectedMode === "all" || run.mode === selectedMode) &&
     (String(run.map) + " " + String(run.player)).toLowerCase().includes(query)
   );
   const victories = visibleRuns.filter((run) => run.result === "Victory").length;
-  $("runCount").textContent = visibleRuns.length + " runs · " + victories +
-    " wins · latest 100 reports";
+  const filtersActive = query || selectedMap !== "all" || selectedMode !== "all" || currentFilter !== "All";
+  $("runCount").textContent = filtersActive
+    ? visibleRuns.length + " matches · " + victories + " wins · " + periodTotal + " runs in period"
+    : runs.length + " recent reports shown · " + periodTotal + " runs in period";
 
   if (runs.length === 0) {
     $("runs").innerHTML = renderEmptyState(
@@ -238,6 +270,7 @@ function renderReportAge() {
   if (!latestReportAt) {
     $("age").textContent = "Waiting for the first Discord report";
     $("age").classList.remove("stale");
+    $("reportDot").className = "report-dot waiting";
     return;
   }
   const minutes = Math.max(0, Math.floor((Date.now() - new Date(latestReportAt)) / 60000));
@@ -247,6 +280,7 @@ function renderReportAge() {
   const isStale = minutes > staleAfterMinutes;
   $("age").textContent = (isStale ? "No report for " : "Latest report ") + ageText;
   $("age").classList.toggle("stale", isStale);
+  $("reportDot").className = "report-dot " + (isStale ? "stale" : "recent");
 }
 
 function renderFarmingPace() {
@@ -292,7 +326,13 @@ function renderDashboard(stats) {
 
 async function loadDashboard() {
   try {
-    const response = await fetch("/api/dashboard", { cache: "no-store" });
+    const params = new URLSearchParams();
+    const since = selectedPeriodStart();
+    if (since) params.set("since", since.toISOString());
+    const query = params.toString();
+    const response = await fetch("/api/dashboard" + (query ? "?" + query : ""), {
+      cache: "no-store"
+    });
     if (!response.ok) throw new Error("HTTP " + response.status);
     const data = await response.json();
     runs = (data.runs || []).map((run) => ({
@@ -307,11 +347,19 @@ async function loadDashboard() {
       mergedRewards[normalizedName] = (mergedRewards[normalizedName] || 0) + Number(amount || 0);
     });
     rewards = Object.entries(mergedRewards).sort((left, right) => right[1] - left[1]);
-    latestReportAt = data.lastReport || runs[0]?.created_at || null;
-    $("player").textContent = runs[0]?.player || "—";
+    periodTotal = Number(data.stats?.total || 0);
+    latestReportAt = data.lastReport || null;
+    latestPlayer = data.lastPlayer || runs[0]?.player || null;
+    latestBalances = data.lastBalances || "";
+    latestRewards = Array.isArray(data.lastRewards) ? data.lastRewards : [];
+    $("player").textContent = latestPlayer || "—";
+    updateFilterOptions("mapFilter", runs.map((run) => run.map), "All maps");
+    updateFilterOptions("modeFilter", runs.map((run) => run.mode), "All modes");
     renderReportAge();
     renderDashboard(data.stats || {});
   } catch (error) {
+    $("age").textContent = "Report status unavailable";
+    $("reportDot").className = "report-dot stale";
     $("runs").innerHTML = '<div class="empty-state compact"><h3>Could not load dashboard</h3><p>' +
       escapeHTML(error.message) + '</p><span class="empty-hint">Try refreshing in a moment.</span></div>';
     $("chart").innerHTML = '<div class="chart-empty">Activity data is unavailable.</div>';
@@ -339,6 +387,9 @@ async function loadManifests() {
 }
 
 $("search").addEventListener("input", renderRuns);
+$("periodFilter").addEventListener("change", loadDashboard);
+$("mapFilter").addEventListener("change", renderRuns);
+$("modeFilter").addEventListener("change", renderRuns);
 $("chips").addEventListener("click", (event) => {
   const button = event.target.closest(".filter-chip");
   if (!button) return;
@@ -385,5 +436,4 @@ loadManifests();
 loadDashboard();
 setInterval(renderReportAge, 30000);
 setInterval(loadDashboard, 60000);
-
 
