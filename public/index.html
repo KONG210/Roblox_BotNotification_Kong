@@ -44,14 +44,20 @@
 
     <div class="stats-toolbar">
       <div><strong>Performance summary</strong><span>Choose the period for your totals and rewards.</span></div>
-      <label class="select-control period-control">
+      <div class="time-range-control">
         <span>Time range</span>
-        <select id="periodFilter" aria-label="Statistics time range">
-          <option value="all">All time</option>
-          <option value="today">Today</option>
-          <option value="7d">Last 7 days</option>
-        </select>
-      </label>
+        <div class="custom-select" data-custom-select="periodFilter">
+          <select id="periodFilter" class="native-select-hidden" aria-hidden="true" tabindex="-1">
+            <option value="all">All time</option>
+            <option value="today">Today</option>
+            <option value="7d">Last 7 days</option>
+          </select>
+          <button class="select-trigger" type="button" aria-label="Statistics time range" aria-haspopup="listbox" aria-expanded="false" aria-controls="periodFilter-menu">
+            <span class="select-trigger-icon" aria-hidden="true">◷</span><span class="select-trigger-text" id="periodFilter-value">All time</span><span class="select-chevron" aria-hidden="true"></span>
+          </button>
+          <div class="select-menu" id="periodFilter-menu" role="listbox" aria-label="Statistics time range" hidden></div>
+        </div>
+      </div>
     </div>
     <section class="stats-grid" aria-label="Farm statistics">
       <article class="stat-card stat-primary">
@@ -92,18 +98,24 @@
               <span aria-hidden="true">⌕</span>
               <input id="search" type="search" placeholder="Search maps or players..." aria-label="Search maps or players">
             </label>
-            <label class="select-control filter-select">
-              <span class="sr-only">Filter by map</span>
-              <select id="mapFilter" aria-label="Filter by map">
+            <div class="filter-select custom-select" data-custom-select="mapFilter">
+              <select id="mapFilter" class="native-select-hidden" aria-hidden="true" tabindex="-1">
                 <option value="all">All maps</option>
               </select>
-            </label>
-            <label class="select-control filter-select">
-              <span class="sr-only">Filter by mode</span>
-              <select id="modeFilter" aria-label="Filter by mode">
+              <button class="select-trigger" type="button" aria-label="Filter by map" aria-haspopup="listbox" aria-expanded="false" aria-controls="mapFilter-menu">
+                <span class="select-trigger-icon" aria-hidden="true">⌖</span><span class="select-trigger-text" id="mapFilter-value">All maps</span><span class="select-chevron" aria-hidden="true"></span>
+              </button>
+              <div class="select-menu" id="mapFilter-menu" role="listbox" aria-label="Filter by map" hidden></div>
+            </div>
+            <div class="filter-select custom-select" data-custom-select="modeFilter">
+              <select id="modeFilter" class="native-select-hidden" aria-hidden="true" tabindex="-1">
                 <option value="all">All modes</option>
               </select>
-            </label>
+              <button class="select-trigger" type="button" aria-label="Filter by mode" aria-haspopup="listbox" aria-expanded="false" aria-controls="modeFilter-menu">
+                <span class="select-trigger-icon" aria-hidden="true">☷</span><span class="select-trigger-text" id="modeFilter-value">All modes</span><span class="select-chevron" aria-hidden="true"></span>
+              </button>
+              <div class="select-menu" id="modeFilter-menu" role="listbox" aria-label="Filter by mode" hidden></div>
+            </div>
             <div class="filter-chips" id="chips" role="group" aria-label="Filter runs by result">
               <button class="filter-chip on" type="button" data-f="All" aria-pressed="true">All</button>
               <button class="filter-chip" type="button" data-f="Victory" aria-pressed="false">Wins</button>
