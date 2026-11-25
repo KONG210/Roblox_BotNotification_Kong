@@ -42,6 +42,9 @@ const clean = value => String(value ?? '').replace(/<[^>]*>/g, '').replace(/\*\*
 function parseMessage(msg) {
   const e = msg.embeds?.[0];
   const fields = (e?.fields || []).map(f => ({name:clean(f.name), value:clean(f.value)}));
+  const attachmentImage = [...(msg.attachments?.values?.() || [])]
+    .find(file => file.contentType?.startsWith('image/'))?.url || '';
+  const mapImage = e?.image?.url || e?.thumbnail?.url || attachmentImage;
   const field = key => fields.find(f => f.name.toLowerCase().includes(key))?.value || '';
   const text = [msg.content, e?.title, e?.description, ...fields.flatMap(f => [f.name,f.value])].filter(Boolean).join('\n');
   const match = re => clean(text.match(re)?.[1] || '');
@@ -60,7 +63,7 @@ function parseMessage(msg) {
   return {id:msg.id, created_at:msg.createdAt.toISOString(), player:clean(playerText.split('\n')[0]) || match(/player\s*[:：]\s*([^\n]+)/i), result, map,
     mode:match(/\b(Raid|Story|Infinite|Challenge)\b/i), wave:Number(match(/wave\s*[:：]?\s*(\d+)/i)) || null,
     duration:match(/time\s*[:：]?\s*([^\n]+)/i), difficulty:match(/difficulty\s*[:：]?\s*(Easy|Normal|Hard|Insane|Nightmare)/i),
-    weather:match(/weather\s*[:：]?\s*([^\n]+)/i), rewards, balances:field('balance'), raw:text};
+    weather:match(/weather\s*[:：]?\s*([^\n]+)/i), rewards, balances:field('balance'), map_image:mapImage || '', raw:text};
 }
 async function saveMessage(msg) {
   if (msg.channelId !== process.env.DISCORD_CHANNEL_ID || !msg.webhookId) return;
@@ -69,9 +72,11 @@ async function saveMessage(msg) {
   const r = parseMessage(msg);
   if (/test notification/i.test(r.map)) return; // test pings from the Roblox script are not real runs
   if (r.result === 'Unknown' && !r.rewards.length) return;
-  const result = await pool.query(`INSERT INTO runs (id,created_at,player,result,map,mode,wave,duration,difficulty,weather,rewards,balances,raw)
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) ON CONFLICT (id) DO NOTHING`,
-    [r.id,r.created_at,r.player,r.result,r.map,r.mode,r.wave,r.duration,r.difficulty,r.weather,JSON.stringify(r.rewards),r.balances,r.raw]);
+  const result = await pool.query(`INSERT INTO runs (id,created_at,player,result,map,mode,wave,duration,difficulty,weather,rewards,balances,map_image,raw)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
+    ON CONFLICT (id) DO UPDATE SET map_image=EXCLUDED.map_image
+    WHERE COALESCE(runs.map_image,'')='' AND EXCLUDED.map_image<>''`,
+    [r.id,r.created_at,r.player,r.result,r.map,r.mode,r.wave,r.duration,r.difficulty,r.weather,JSON.stringify(r.rewards),r.balances,r.map_image,r.raw]);
   if (result.rowCount) io.emit('updated');
 }
 const REAL_RUN = "COALESCE(map,'') NOT ILIKE '%test notification%'"; // also hides test pings already stored
@@ -123,7 +128,8 @@ async function main() {
   await pool.query(`CREATE TABLE IF NOT EXISTS runs (
     id TEXT PRIMARY KEY, created_at TIMESTAMPTZ NOT NULL, player TEXT, result TEXT, map TEXT, mode TEXT,
     wave INTEGER, duration TEXT, difficulty TEXT, weather TEXT, rewards JSONB NOT NULL DEFAULT '[]'::jsonb,
-    balances TEXT, raw TEXT NOT NULL)`);
+    balances TEXT, map_image TEXT, raw TEXT NOT NULL)`);
+  await pool.query('ALTER TABLE runs ADD COLUMN IF NOT EXISTS map_image TEXT');
   await pool.query('CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT NOT NULL)');
   clearedAt = Number((await pool.query("SELECT value FROM meta WHERE key='cleared_at'")).rows[0]?.value) || 0;
   const client = new Client({intents:[GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent]});

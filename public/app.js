@@ -68,11 +68,23 @@ function itemImage(name) {
   return "/assets/" + (fallback ? fallback[1] : "chest") + ".svg";
 }
 
-function mapImage(name) {
+function mapImage(name, sourceUrl) {
   const fullName = normalizeMap(name);
   const baseName = normalizeMap(String(name).split("(")[0]);
   const match = mapIcons.find(([key]) => key === fullName) || mapIcons.find(([key]) => key === baseName);
-  return match ? "/assets/maps/" + match[1] : "";
+  const local = match ? "/assets/maps/" + match[1] : "";
+  let remote = "";
+  try {
+    const parsed = new URL(sourceUrl || "");
+    if (parsed.protocol === "https:") remote = parsed.href;
+  } catch {}
+  return { src: remote || local, fallback: remote && local && remote !== local ? local : "" };
+}
+
+function runModeLabel(run) {
+  return String(run.mode || "").toLowerCase() === "raid" && Number(run.wave) === 50
+    ? "Summer Event"
+    : run.mode || "";
 }
 
 function selectedPeriodStart() {
@@ -259,7 +271,7 @@ function renderRunDetails(run, index) {
   const isExpanded = expandedRunIds.has(runKey);
   const fields = [
     ["Player", run.player], ["Result", run.result], ["Map", run.map],
-    ["Mode", run.mode], ["Difficulty", run.difficulty], ["Wave", run.wave ? "Wave " + run.wave : ""],
+    ["Mode", runModeLabel(run)], ["Difficulty", run.difficulty], ["Wave", run.wave ? "Wave " + run.wave : ""],
     ["Duration", run.duration], ["Weather", run.weather], ["Reported", formatDateTime(run.created_at)]
   ].filter(([, value]) => value !== null && value !== undefined && value !== "");
   const fieldMarkup = fields.map(([label, value]) =>
@@ -301,7 +313,7 @@ function renderRuns() {
     !(hiddenRun.unreadable(run) && run.result !== "Defeat") &&
     (currentFilter === "All" || run.result === currentFilter) &&
     (selectedMap === "all" || run.map === selectedMap) &&
-    (selectedMode === "all" || run.mode === selectedMode) &&
+    (selectedMode === "all" || runModeLabel(run) === selectedMode) &&
     (String(run.map) + " " + String(run.player)).toLowerCase().includes(query)
   );
   const victories = visibleRuns.filter((run) => run.result === "Victory").length;
@@ -336,17 +348,20 @@ function renderRuns() {
     previousDay = currentDay;
 
     const map = run.map || "Unknown map";
-    const image = mapImage(map);
-    const mapArt = '<div class="map-art ' + (image ? 'has-map-image' : 'no-map-image') +
-      '" role="img" aria-label="' + escapeHTML(image ? map : map + ', map preview unavailable') +
+    const image = mapImage(map, run.map_image);
+    const hasImage = Boolean(image.src);
+    const mapArt = '<div class="map-art ' + (hasImage ? 'has-map-image' : 'no-map-image') +
+      '" role="img" aria-label="' + escapeHTML(hasImage ? map : map + ', map preview unavailable') +
       '" style="--map-hue:' + hueFor(map) + '">' +
-      (image ? '<img class="map-preview-image" src="' + escapeHTML(image) + '" alt="" aria-hidden="true">' : '') + '<span>' +
-      escapeHTML(map) + '</span>' + (image ? '' : '<small class="map-preview-note">Map preview unavailable</small>') + '</div>';
+      (hasImage ? '<img class="map-preview-image" src="' + escapeHTML(image.src) + '"' +
+        (image.fallback ? ' data-fallback-src="' + escapeHTML(image.fallback) + '"' : '') + ' alt="" aria-hidden="true">' : '') + '<span>' +
+      escapeHTML(map) + '</span>' + (hasImage ? '' : '<small class="map-preview-note">Map preview unavailable</small>') + '</div>';
     const resultLabel = isVictory ? "Victory" : "Defeat";
     const resultClass = isVictory ? "win" : "loss";
     const tags = [
-      run.mode ? '<span class="run-tag">' + escapeHTML(run.mode) + '</span>' : "",
-      run.difficulty ? '<span class="run-tag">' + escapeHTML(run.difficulty) + '</span>' : ""
+      runModeLabel(run) ? '<span class="run-tag">' + escapeHTML(runModeLabel(run)) + '</span>' : "",
+      run.difficulty ? '<span class="run-tag">' + escapeHTML(run.difficulty) + '</span>' : "",
+      run.weather ? '<span class="run-tag weather-tag"><i aria-hidden="true">☁</i>' + escapeHTML(run.weather) + '</span>' : ""
     ].filter(Boolean).join("");
     const metadata = [
       run.wave ? "Wave " + escapeHTML(run.wave) : "",
@@ -436,8 +451,14 @@ function renderFarmingPace() {
 function attachImageFallbacks(root) {
   root.querySelectorAll("img").forEach((image) => {
     image.onerror = () => {
-      image.onerror = null;
       if (image.classList.contains("map-preview-image")) {
+        const fallback = image.dataset.fallbackSrc;
+        if (fallback) {
+          image.dataset.fallbackSrc = "";
+          image.src = fallback;
+          return;
+        }
+        image.onerror = null;
         const map = image.parentElement;
         image.remove();
         map.classList.remove("has-map-image");
@@ -449,6 +470,7 @@ function attachImageFallbacks(root) {
         map.append(note);
         return;
       }
+      image.onerror = null;
       image.src = "/assets/chest.svg";
     };
   });
@@ -493,7 +515,7 @@ async function loadDashboard() {
     latestRewards = Array.isArray(data.lastRewards) ? data.lastRewards : [];
     $("player").textContent = latestPlayer || "—";
     updateFilterOptions("mapFilter", runs.map((run) => run.map), "All maps");
-    updateFilterOptions("modeFilter", runs.map((run) => run.mode), "All modes");
+    updateFilterOptions("modeFilter", runs.map(runModeLabel), "All modes");
     renderReportAge();
     renderDashboard(data.stats || {});
   } catch (error) {

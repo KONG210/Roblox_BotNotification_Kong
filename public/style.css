@@ -274,6 +274,8 @@ button:focus-visible, input:focus-visible, a:focus-visible {
 .run-result.loss { color: var(--red); }
 .run-map-name { min-width: 0; overflow: hidden; color: #365570; font: 800 13px/1.3 "Manrope", sans-serif; text-overflow: ellipsis; white-space: nowrap; }
 .run-tag { padding: 3px 7px; border-radius: 99px; background: #edf7ff; color: #6599bd; font-size: 8px; font-weight: 800; text-transform: uppercase; }
+.weather-tag { display: inline-flex; align-items: center; gap: 4px; background: #f1f7fc; color: #708fa8; text-transform: none; }
+.weather-tag i { color: #7ca9c8; font-size: 10px; font-style: normal; line-height: 1; }
 .run-meta { display: flex; flex-wrap: wrap; gap: 5px 11px; margin-top: 5px; color: #8aa0b3; font-size: 10px; }
 .reward-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
 .reward-chip { display: inline-flex; align-items: center; gap: 5px; max-width: 100%; padding: 3px 7px 3px 4px; border: 1px solid #e8f0f6; border-radius: 8px; background: #f8fbfe; color: #738ba1; font-size: 9px; }
