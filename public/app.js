@@ -46,9 +46,9 @@ function renderTiles(){
 }
 function renderRewards(){
   const rest=allRewards.filter(([n])=>slotOf(n)<0);
-  $('itemCount').textContent=rest.length+' ชนิด';
+  $('itemCount').textContent=rest.length+' items';
   $('items').style.display=$('rewards').style.display=rest.length?'':'none'; // nothing besides the 4 top tiles => hide the section
-  $('rewards').innerHTML=rest.map(([n,c])=>`<div class="item" style="--c:hsl(${hue(n)} 70% 62%)"><strong>${compact(c)}</strong><img loading="lazy" src="${asset(n)}" alt=""><span title="${esc(n)}">${esc(n)}</span></div>`).join('')||'<div class="skeleton">ยังไม่มีไอเทม</div>';
+  $('rewards').innerHTML=rest.map(([n,c])=>`<div class="item" style="--c:hsl(${hue(n)} 70% 62%)"><strong>${compact(c)}</strong><img loading="lazy" src="${asset(n)}" alt=""><span title="${esc(n)}">${esc(n)}</span></div>`).join('')||'<div class="skeleton">No rewards yet</div>';
 }
 function thumb(map){const img=mapImg(map);return `<div class="thumb" style="--h:${hue(map)};${img?`background-image:linear-gradient(#0000 35%,#000b),url('${img}')`:''}"><span>${esc(map||'Unknown')}</span></div>`}
 function renderRuns(){
@@ -63,9 +63,9 @@ function renderRuns(){
   $('runs').innerHTML=list.map(r=>{
     const win=r.result==='Victory',k=dayKey(r.created_at);
     const head=k!==lastDay?`<div class="day"><span>${dayLabel(r.created_at)}</span></div>`:'';lastDay=k;
-    const rw=(r.rewards||[]).filter(x=>!HIDDEN.test(x.item)).map(x=>`<span class="rw"><img src="${asset(x.item)}" alt=""><span>${esc(x.item)}</span><b>×${fmt(x.amount)}</b></span>`).join('')||'<span class="rw none">ไม่มีรางวัลที่บันทึก</span>';
+    const rw=(r.rewards||[]).filter(x=>!HIDDEN.test(x.item)).map(x=>`<span class="rw"><img src="${asset(x.item)}" alt=""><span>${esc(x.item)}</span><b>×${fmt(x.amount)}</b></span>`).join('')||'<span class="rw none">No rewards recorded</span>';
     const meta=[r.difficulty,r.wave?'Wave '+esc(r.wave):'',r.duration].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('');
-    return head+`<div class="run ${win?'win':'loss'}"><div class="t">${hhmm(r.created_at)}</div><div class="line"><span class="node">${win?'✓':'✕'}</span></div><div class="rcard">${thumb(r.map)}<div class="rbody"><div class="rtop"><span class="res ${win?'w':'l'}">${win?'ชนะ':'แพ้'}</span><b title="${esc(r.map)}">${esc(r.map||'Unknown map')}</b>${r.mode?`<span class="tag">${esc(r.mode)}</span>`:''}<span class="rmeta">${meta}</span></div><div class="chipsr">${rw}</div></div></div></div>`;
+    return head+`<div class="run ${win?'win':'loss'}"><div class="t">${hhmm(r.created_at)}</div><div class="line"><span class="node">${win?'✓':'✕'}</span></div><div class="rcard">${thumb(r.map)}<div class="rbody"><div class="rtop"><span class="res ${win?'w':'l'}">${win?'WIN':'LOSS'}</span><b title="${esc(r.map)}">${esc(r.map||'Unknown map')}</b>${r.mode?`<span class="tag">${esc(r.mode)}</span>`:''}<span class="rmeta">${meta}</span></div><div class="chipsr">${rw}</div></div></div></div>`;
   }).join('')||'<div class="skeleton">No matching runs</div>';
 }
 function renderChart(){
@@ -81,7 +81,7 @@ function renderAge(){
   if(!lastReportAt){el.textContent='Waiting for the first Discord report';el.className='age';return}
   const m=Math.max(0,Math.floor((Date.now()-new Date(lastReportAt))/6e4));
   const t=m<1?'just now':m<60?m+' min ago':Math.floor(m/60)+' hr '+(m%60)+' min ago';
-  el.textContent=(m>STALE_MIN?'⚠ ไม่มีรายงานมา ':'Latest report ')+t;
+  el.textContent=(m>STALE_MIN?'⚠ No report for ':'Latest report ')+t;
   el.className='age'+(m>STALE_MIN?' stale':'');
 }
 function renderRates(){
@@ -89,10 +89,10 @@ function renderRates(){
   const hrs=rs.length>1?(new Date(rs[0].created_at)-new Date(rs[rs.length-1].created_at))/36e5:0;
   card.hidden=hrs<0.25; // too little data for a meaningful rate
   if(card.hidden)return;
-  $('rateNote').textContent=`จาก ${rs.length} รอบ · ${hrs.toFixed(1)} ชม.`;
+  $('rateNote').textContent=`Based on ${rs.length} runs · ${hrs.toFixed(1)} hr`;
   const sum=re=>rs.reduce((a,r)=>a+(r.rewards||[]).filter(x=>re.test(x.item)).reduce((b,x)=>b+x.amount,0),0);
-  const tiles=[`<div class="tile"><div><b>${(rs.length/hrs).toFixed(1)}</b><span>รอบ / ชม.</span></div></div>`];
-  for(const s of slots){const v=sum(s.re);if(v>0)tiles.push(`<div class="tile"><img src="${asset(s.icon)}" alt=""><div><b>${fmt(Math.round(v/hrs))}</b><span>${s.label} / ชม.</span></div></div>`)}
+  const tiles=[`<div class="tile"><div><b>${(rs.length/hrs).toFixed(1)}</b><span>runs / hr</span></div></div>`];
+  for(const s of slots){const v=sum(s.re);if(v>0)tiles.push(`<div class="tile"><img src="${asset(s.icon)}" alt=""><div><b>${fmt(Math.round(v/hrs))}</b><span>${s.label} / hr</span></div></div>`)}
   $('rates').innerHTML=tiles.join('');
 }
 function render(){renderTiles();renderRewards();renderRuns();renderChart();renderRates()}
@@ -113,7 +113,7 @@ async function load(){
     $('rate').textContent=rate.toFixed(1)+'%';$('rateSub').textContent=`${fmt(s.wins)} / ${fmt(s.total)}`;$('rateBar').style.width=rate+'%';
     $('player').textContent=allRuns[0]?.player||'—';lastReportAt=data.lastReport;renderAge();
     render();
-  }catch(err){$('runs').innerHTML='<div class="skeleton">โหลดข้อมูลไม่สำเร็จ: '+esc(err.message)+'</div>'}
+  }catch(err){$('runs').innerHTML='<div class="skeleton">Could not load dashboard data: '+esc(err.message)+'</div>'}
 }
 
 $('search').oninput=renderRuns;
