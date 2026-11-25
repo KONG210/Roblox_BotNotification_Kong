@@ -280,6 +280,49 @@ button:focus-visible, input:focus-visible, a:focus-visible {
 .reward-chip img { width: 19px; height: 19px; flex: 0 0 auto; object-fit: contain; }
 .reward-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .reward-chip b { color: #4e6e88; font: 800 9px "DM Sans", sans-serif; font-variant-numeric: tabular-nums; }
+.run-details-toggle {
+  display: inline-flex; align-items: center; gap: 7px; justify-self: start; margin-top: 8px;
+  padding: 6px 9px; border: 1px solid #e2eef7; border-radius: 9px;
+  background: #f7fbfe; color: #6b94b2; font: 800 9px "Manrope",sans-serif; cursor: pointer;
+  transition: border-color .16s, background .16s, color .16s;
+}
+.run-details-toggle:hover, .run-details-toggle[aria-expanded="true"] {
+  border-color: #c4e1f3; background: #edf7fd; color: #367faa;
+}
+.run-details-toggle i {
+  width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: translateY(-1px) rotate(45deg); transition: transform .16s;
+}
+.run-details-toggle[aria-expanded="true"] i { transform: translateY(2px) rotate(225deg); }
+.run-details[hidden] { display: none; }
+.run-details {
+  display: grid; gap: 10px; min-width: 0; margin-top: 9px; padding: 11px;
+  border: 1px solid #e5eff7; border-radius: 12px; background: linear-gradient(145deg,#fbfdff,#f5faff);
+  animation: details-in .18s ease-out;
+}
+@keyframes details-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: translateY(0); } }
+.run-detail-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; }
+.run-detail-field { min-width: 0; display: grid; gap: 3px; padding: 7px 8px; border: 1px solid #edf3f8; border-radius: 8px; background: #fff; }
+.run-detail-field > span, .run-report-balance > span { color: #91a6b8; font-size: 8px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.run-detail-field > strong { overflow-wrap: anywhere; color: #4b6a84; font: 700 9px/1.35 "Manrope",sans-serif; }
+.run-detail-rewards h4 { margin-bottom: 6px; color: #56758e; font: 800 9px "Manrope",sans-serif; }
+.run-detail-reward-list { display: grid; grid-template-columns: repeat(auto-fit,minmax(145px,1fr)); gap: 5px; }
+.run-detail-reward {
+  min-width: 0; display: grid; grid-template-columns: 22px minmax(0,1fr) auto; align-items: center; gap: 5px;
+  padding: 5px 7px; border: 1px solid #e9f1f7; border-radius: 8px; background: #fff;
+}
+.run-detail-reward img { width: 22px; height: 22px; object-fit: contain; }
+.run-detail-reward > span { overflow: hidden; color: #6d879c; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.run-detail-reward > b { color: #4783aa; font: 800 9px "Manrope",sans-serif; white-space: nowrap; }
+.run-detail-reward > small { grid-column: 2 / -1; color: #9aaebd; font-size: 7px; }
+.run-details-empty { color: #91a6b8; font-size: 9px; }
+.run-report-balance pre, .run-original-report pre {
+  max-height: 150px; overflow: auto; margin-top: 5px; padding: 8px; border: 1px solid #e9f1f7;
+  border-radius: 8px; background: #fff; color: #71899d; font: 8px/1.55 "DM Sans",sans-serif;
+  white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.run-original-report { color: #6e91aa; font-size: 8px; }
+.run-original-report summary { width: fit-content; cursor: pointer; font-weight: 800; }
 .balance-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; margin-top: 14px; }
 .balance-item {
   display: flex; align-items: center; gap: 9px; min-width: 0; padding: 10px;
@@ -375,6 +418,9 @@ button:focus-visible, input:focus-visible, a:focus-visible {
   .map-art { min-height: 72px; padding: 6px; font-size: 8px; }
   .run-map-name { font-size: 11px; }
   .run-meta { font-size: 9px; }
+  .run-details { padding: 8px; }
+  .run-detail-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .run-detail-reward-list { grid-template-columns: 1fr; }
   .reward-chips { gap: 4px; }
   .reward-chip { max-width: 100%; font-size: 8px; }
   .reward-chip img { width: 16px; height: 16px; }

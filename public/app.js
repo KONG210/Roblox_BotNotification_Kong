@@ -28,6 +28,7 @@ let itemIcons = [];
 let mapIcons = [];
 let currentFilter = "All";
 let expandedRewards = false;
+const expandedRunIds = new Set();
 let latestReportAt = null;
 let latestPlayer = null;
 let latestBalances = "";
@@ -252,6 +253,40 @@ function renderEmptyState(title, message, hint) {
     (hint ? '<span class="empty-hint">' + hint + '</span>' : "") + '</div>';
 }
 
+function renderRunDetails(run, index) {
+  const detailsId = "run-details-" + index;
+  const runKey = String(run.id || run.created_at || index);
+  const isExpanded = expandedRunIds.has(runKey);
+  const fields = [
+    ["Player", run.player], ["Result", run.result], ["Map", run.map],
+    ["Mode", run.mode], ["Difficulty", run.difficulty], ["Wave", run.wave ? "Wave " + run.wave : ""],
+    ["Duration", run.duration], ["Weather", run.weather], ["Reported", formatDateTime(run.created_at)]
+  ].filter(([, value]) => value !== null && value !== undefined && value !== "");
+  const fieldMarkup = fields.map(([label, value]) =>
+    '<div class="run-detail-field"><span>' + escapeHTML(label) + '</span><strong>' +
+    escapeHTML(value) + '</strong></div>'
+  ).join("");
+  const allRewards = (run.rewards || []).map((entry) =>
+    '<div class="run-detail-reward"><img loading="lazy" src="' + itemImage(entry.item) + '" alt="">' +
+    '<span>' + escapeHTML(entry.item) + '</span><b>+' + formatNumber(entry.amount) + '</b>' +
+    (entry.total == null ? '' : '<small>Total ' + formatNumber(entry.total) + '</small>') + '</div>'
+  ).join("") || '<p class="run-details-empty">No reward items were included in this report.</p>';
+  const balanceMarkup = run.balances
+    ? '<div class="run-report-balance"><span>Reported balances</span><pre>' + escapeHTML(run.balances) + '</pre></div>'
+    : '';
+  const rawMarkup = run.raw
+    ? '<details class="run-original-report"><summary>View original Discord report</summary><pre>' +
+      escapeHTML(run.raw) + '</pre></details>'
+    : '';
+  return '<button class="run-details-toggle" type="button" data-run-id="' + escapeHTML(runKey) +
+    '" aria-expanded="' + String(isExpanded) + '" aria-controls="' + detailsId + '">' +
+    '<span>' + (isExpanded ? 'Hide run details' : 'View run details') + '</span><i aria-hidden="true"></i></button>' +
+    '<section class="run-details" id="' + detailsId + '"' + (isExpanded ? '' : ' hidden') + '>' +
+    '<div class="run-detail-grid">' + fieldMarkup + '</div>' +
+    '<div class="run-detail-rewards"><h4>Rewards in this run</h4><div class="run-detail-reward-list">' + allRewards + '</div></div>' +
+    balanceMarkup + rawMarkup + '</section>';
+}
+
 function renderRuns() {
   const query = $("search").value.trim().toLowerCase();
   const selectedMap = $("mapFilter").value;
@@ -292,7 +327,7 @@ function renderRuns() {
   }
 
   let previousDay = "";
-  const markup = visibleRuns.map((run) => {
+  const markup = visibleRuns.map((run, index) => {
     const isVictory = run.result === "Victory";
     const currentDay = dateKey(run.created_at);
     const divider = currentDay !== previousDay
@@ -325,12 +360,12 @@ function renderRuns() {
         formatNumber(entry.amount) + '</b></span>'
       ).join("") || '<span class="reward-chip">No rewards recorded</span>';
 
-    return divider + '<article class="run-card">' + mapArt + '<div class="run-content">' +
+    return divider + '<article class="run-card" data-run-id="' + escapeHTML(String(run.id || run.created_at || index)) + '">' + mapArt + '<div class="run-content">' +
       '<div class="run-heading"><span class="run-result ' + resultClass + '">' +
       resultLabel + '</span><span class="run-map-name" title="' + escapeHTML(map) + '">' +
       escapeHTML(map) + '</span>' + tags + '</div>' +
       '<div class="run-meta">' + metadata + '</div>' +
-      '<div class="reward-chips">' + dropMarkup + '</div></div></article>';
+      '<div class="reward-chips">' + dropMarkup + '</div>' + renderRunDetails(run, index) + '</div></article>';
   }).join("");
   $("runs").innerHTML = markup;
   attachImageFallbacks($("runs"));
@@ -491,6 +526,19 @@ async function loadManifests() {
 }
 
 $("search").addEventListener("input", renderRuns);
+$("runs").addEventListener("click", (event) => {
+  const button = event.target.closest(".run-details-toggle");
+  if (!button) return;
+  const card = button.closest(".run-card");
+  const details = card.querySelector(".run-details");
+  const expanded = button.getAttribute("aria-expanded") === "true";
+  const runKey = button.dataset.runId;
+  if (expanded) expandedRunIds.delete(runKey);
+  else expandedRunIds.add(runKey);
+  button.setAttribute("aria-expanded", String(!expanded));
+  button.querySelector("span").textContent = expanded ? "View run details" : "Hide run details";
+  details.hidden = expanded;
+});
 initCustomSelects();
 $("periodFilter").addEventListener("change", loadDashboard);
 $("mapFilter").addEventListener("change", renderRuns);
