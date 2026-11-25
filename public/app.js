@@ -5,7 +5,7 @@ const compact=n=>new Intl.NumberFormat('en',{notation:'compact',maximumFractionD
 const dt=s=>s?new Date(s).toLocaleString('en-GB',{dateStyle:'short',timeStyle:'short'}):'—';
 const hhmm=s=>new Date(s).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false});
 const dayKey=s=>new Date(s).toDateString();
-const dayLabel=s=>(dayKey(s)===new Date().toDateString()?'Today · ':'')+new Date(s).toLocaleDateString('th-TH',{day:'numeric',month:'short'});
+const dayLabel=s=>(dayKey(s)===new Date().toDateString()?'Today · ':'')+new Date(s).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
 const hue=s=>[...String(s)].reduce((a,c)=>(a*31+c.charCodeAt(0))%360,7);
 
 let allRuns=[],allRewards=[],resultFilter='All',icons=[],mapIcons=[];
@@ -127,10 +127,10 @@ $('clear').onclick=async()=>{
 };
 
 const socket=io();
-socket.on('connect',()=>{$('connection').textContent='Connected';$('dot').style.background='#4ade80';load()});
-socket.on('disconnect',()=>{$('connection').textContent='Disconnected';$('dot').style.background='#f87171'});
+socket.on('connect',()=>{$('connection').textContent='Connected';$('dot').style.background='#59b897';load()});
+socket.on('disconnect',()=>{$('connection').textContent='Disconnected';$('dot').style.background='#de7b83'});
 socket.on('updated',load);
-socket.on('connect_error',()=>{$('connection').textContent='API mode';$('dot').style.background='#f59e0b'});
+socket.on('connect_error',()=>{$('connection').textContent='API mode';$('dot').style.background='#e6ad4e'});
 load();
 setInterval(renderAge,30000);
 setInterval(load,60000); // keep working if WebSocket is unavailable
