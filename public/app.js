@@ -66,7 +66,7 @@ function renderRuns(){
     const rw=(r.rewards||[]).filter(x=>!HIDDEN.test(x.item)).map(x=>`<span class="rw"><img src="${asset(x.item)}" alt=""><span>${esc(x.item)}</span><b>×${fmt(x.amount)}</b></span>`).join('')||'<span class="rw none">No rewards recorded</span>';
     const meta=[r.difficulty,r.wave?'Wave '+esc(r.wave):'',r.duration].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('');
     return head+`<div class="run ${win?'win':'loss'}"><div class="t">${hhmm(r.created_at)}</div><div class="line"><span class="node">${win?'✓':'✕'}</span></div><div class="rcard">${thumb(r.map)}<div class="rbody"><div class="rtop"><span class="res ${win?'w':'l'}">${win?'WIN':'LOSS'}</span><b title="${esc(r.map)}">${esc(r.map||'Unknown map')}</b>${r.mode?`<span class="tag">${esc(r.mode)}</span>`:''}<span class="rmeta">${meta}</span></div><div class="chipsr">${rw}</div></div></div></div>`;
-  }).join('')||'<div class="skeleton">No matching runs</div>';
+  }).join('')||(allRuns.length===0?'<div class="empty-state"><span class="empty-mark">✦</span><h2>No farm reports yet</h2><p>When your Discord webhook posts a run report, it will show up here automatically.</p><span class="empty-hint">Your dashboard is connected and waiting for its first report.</span></div>':'<div class="empty-state compact"><h2>No matching runs</h2><p>Try another search or switch the result filter to see more runs.</p></div>');
 }
 function renderChart(){
   const runs=allRuns.slice(0,40).reverse();
