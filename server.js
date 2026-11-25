@@ -75,15 +75,35 @@ async function saveMessage(msg) {
   if (result.rowCount) io.emit('updated');
 }
 const REAL_RUN = "COALESCE(map,'') NOT ILIKE '%test notification%'"; // also hides test pings already stored
-app.get('/api/dashboard', async (_,res) => {
+app.get('/api/dashboard', async (req,res) => {
+  let since = null;
+  if (req.query.since !== undefined) {
+    if (typeof req.query.since !== 'string') {
+      return res.status(400).json({error:'Invalid period start'});
+    }
+    const parsed = new Date(req.query.since);
+    if (Number.isNaN(parsed.getTime())) {
+      return res.status(400).json({error:'Invalid period start'});
+    }
+    since = parsed.toISOString();
+  }
+  const dateFilter = since ? ' AND created_at >= $1' : '';
+  const queryValues = since ? [since] : [];
   try {
-    const [rows, stats, rewards] = await Promise.all([
-      pool.query(`SELECT * FROM runs WHERE ${REAL_RUN} ORDER BY created_at DESC LIMIT 100`),
-      pool.query(`SELECT COUNT(*)::int AS total, COUNT(*) FILTER (WHERE result='Victory')::int AS wins, COUNT(*) FILTER (WHERE result='Defeat')::int AS losses FROM runs WHERE ${REAL_RUN}`),
-      pool.query(`SELECT rewards FROM runs WHERE ${REAL_RUN}`)]);
+    const [rows, stats, rewards, latest] = await Promise.all([
+      pool.query(`SELECT * FROM runs WHERE ${REAL_RUN}${dateFilter} ORDER BY created_at DESC LIMIT 100`, queryValues),
+      pool.query(`SELECT COUNT(*)::int AS total, COUNT(*) FILTER (WHERE result='Victory')::int AS wins, COUNT(*) FILTER (WHERE result='Defeat')::int AS losses FROM runs WHERE ${REAL_RUN}${dateFilter}`, queryValues),
+      pool.query(`SELECT rewards FROM runs WHERE ${REAL_RUN}${dateFilter}`, queryValues),
+      pool.query(`SELECT created_at,player,balances,rewards FROM runs WHERE ${REAL_RUN} ORDER BY created_at DESC LIMIT 1`)]);
     const totals = {};
     for (const row of rewards.rows) for (const reward of row.rewards || []) totals[reward.item] = (totals[reward.item] || 0) + reward.amount;
-    res.json({stats:stats.rows[0], totals, runs:rows.rows, lastReport:rows.rows[0]?.created_at || null});
+    res.json({
+      stats:stats.rows[0], totals, runs:rows.rows,
+      lastReport:latest.rows[0]?.created_at || null,
+      lastPlayer:latest.rows[0]?.player || null,
+      lastBalances:latest.rows[0]?.balances || '',
+      lastRewards:latest.rows[0]?.rewards || []
+    });
   } catch(e) { console.error(e); res.status(500).json({error:'Database unavailable'}); }
 });
 // Behind the Basic-auth middleware above. The custom header blocks cross-site form posts (CSRF).
@@ -129,3 +149,4 @@ async function main() {
   server.listen(port,'0.0.0.0',()=>console.log('Dashboard listening on port',port));
 }
 main().catch(e => {console.error('Startup failed:',e);process.exit(1);});
+
