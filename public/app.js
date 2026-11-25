@@ -72,7 +72,7 @@ function renderChart(){
   const runs=allRuns.slice(0,40).reverse();
   if(!runs.length){$('chart').innerHTML='<div class="skeleton">No run data yet</div>';return}
   const step=676/runs.length,bars=runs.map((r,i)=>{const h=r.result==='Victory'?60:30;return `<rect x="${12+i*step}" y="${70-h}" width="${Math.max(4,step-3)}" height="${h}" rx="2" fill="${r.result==='Victory'?'#59b897':'#de7b83'}" opacity=".9"/>`}).join('');
-  $('chart').innerHTML=`<svg viewBox="0 0 700 74" preserveAspectRatio="none" role="img" aria-label="ผลการเล่นล่าสุด"><line x1="0" y1="70" x2="700" y2="70" stroke="#dce8f2"/>${bars}</svg>`;
+  $('chart').innerHTML=`<svg viewBox="0 0 700 74" preserveAspectRatio="none" role="img" aria-label="Recent run results"><line x1="0" y1="70" x2="700" y2="70" stroke="#dce8f2"/>${bars}</svg>`;
 }
 const STALE_MIN=40; // no report for this long => likely not farming
 let lastReportAt=null;
