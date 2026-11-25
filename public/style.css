@@ -162,3 +162,52 @@ button:focus-visible,input:focus-visible { outline: 3px solid #83c7f4; outline-o
 }
 /* The wiki has no Sky Portal icon; reuse the ring shape in a silver tone. */
 img[src$="sky-portal.png"] { filter: grayscale(1) brightness(1.35) contrast(.9); }
+
+/* Clear, helpful states for an empty timeline. */
+.empty-state {
+  max-width: 560px;
+  margin: clamp(44px, 14vh, 150px) auto 32px;
+  padding: 38px 32px;
+  text-align: center;
+  background: linear-gradient(145deg,rgba(255,255,255,.97),rgba(246,251,255,.94));
+  border: 1px solid #dceaf7;
+  border-radius: 22px;
+  box-shadow: 0 14px 40px #477da012;
+}
+.empty-mark {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 16px;
+  border-radius: 18px;
+  background: linear-gradient(145deg,#e4f5ff,#c6e8fb);
+  color: #428fc3;
+  font-size: 25px;
+}
+.empty-state h2 {
+  margin: 0 0 8px;
+  color: #294863;
+  font: 800 19px/1.3 "Manrope",sans-serif;
+}
+.empty-state p {
+  max-width: 400px;
+  margin: 0 auto;
+  color: #6f879e;
+  font-size: 13px;
+}
+.empty-hint {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 7px 12px;
+  border-radius: 99px;
+  background: #eaf6ff;
+  color: #4d8fba;
+  font-size: 11px;
+  font-weight: 700;
+}
+.empty-state.compact { margin-top: 44px; padding: 26px 22px; }
+.empty-state.compact h2 { font-size: 15px; }
+@media(max-width:640px) {
+  .empty-state { margin: 30px 6px; padding: 30px 20px; }
+}
