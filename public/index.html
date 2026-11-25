@@ -1,64 +1,152 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#eaf5ff">
-<meta name="description" content="A live Anime Adventures farm dashboard.">
-<title>Anime Adventures | Farm Dashboard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#edf7ff">
+  <meta name="description" content="A live Anime Adventures farm dashboard.">
+  <title>Anime Adventures | Farm Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-<div class="app">
-<aside class="side">
-  <div class="side-head">
-    <div class="brand"><span class="mark">AA</span><div><b>Anime Adventures</b><small>FARM DASHBOARD</small></div></div>
-    <button id="refresh" class="icon-btn" title="Refresh dashboard" aria-label="Refresh dashboard">↻</button>
-  </div>
-  <div class="side-scroll">
-    <div class="who"><span class="pill"><span class="dot" id="dot"></span><span id="connection">Connecting...</span></span><span id="player" class="player">—</span></div>
-    <div id="age" class="age"></div>
-    <div class="tiles" id="tiles"></div>
-    <section class="kpis" aria-label="Farm statistics">
-      <div class="kpi wide"><div class="kpi-row"><label>Win rate</label><span id="rateSub" class="muted small"></span></div><strong id="rate">—</strong><div class="bar"><i id="rateBar"></i></div></div>
-      <div class="kpi"><label>Total runs</label><strong id="total">—</strong></div>
-      <div class="kpi"><label>Victories</label><strong id="wins" class="green-text">—</strong></div>
-      <div class="kpi"><label>Defeats</label><strong id="losses" class="red-text">—</strong></div>
-    </section>
-    <p id="hiddenNote" class="muted small"></p>
-    <section class="card" id="ratesCard" hidden>
-      <div class="card-h"><b>Farming pace</b><span id="rateNote" class="muted small"></span></div>
-      <div class="tiles" id="rates"></div>
-    </section>
-    <section class="card" id="activity">
-      <div class="card-h"><b>Last 40 runs</b><span class="legend"><i></i>Wins <i></i>Losses</span></div>
-      <div class="chart" id="chart"></div>
-    </section>
-    <div class="sec-h" id="items"><b>Reward inventory</b><span id="itemCount" class="muted"></span></div>
-    <div class="rewardgrid" id="rewards"><div class="skeleton">Loading rewards...</div></div>
-    <button id="clear" class="danger">Clear history</button>
-    <p class="disclaimer">Top balances come from your latest Discord report. Reward totals are collected since the last history clear. Item icons are fan-made references.</p>
-  </div>
-</aside>
-<section class="timeline" id="history">
-  <header class="tl-head">
-    <div class="tl-title"><span class="eyebrow">YOUR ADVENTURE LOG</span><h1>Farm timeline</h1><span id="runCount" class="muted"></span></div>
-    <div class="tl-ctl">
-      <label class="search"><span aria-hidden="true">⌕</span><input id="search" placeholder="Search maps or players..." aria-label="Search maps or players"></label>
-      <div class="chips" id="chips" aria-label="Filter runs">
-        <button class="chip on" data-f="All">All</button>
-        <button class="chip" data-f="Victory">Wins</button>
-        <button class="chip" data-f="Defeat">Losses</button>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Anime Adventures Farm Dashboard home">
+      <span class="brand-mark">AA</span>
+      <span class="brand-copy"><strong>Anime Adventures</strong><small>FARM DASHBOARD</small></span>
+    </a>
+    <div class="topbar-actions">
+      <div class="connection-pill" role="status" aria-live="polite">
+        <span class="connection-dot" id="dot"></span>
+        <span id="connection">Connecting...</span>
       </div>
+      <button id="refresh" class="button button-quiet" type="button">
+        <span aria-hidden="true">↻</span><span>Refresh</span>
+      </button>
     </div>
   </header>
-  <div id="runs" class="runlist"><div class="skeleton">Loading run history...</div></div>
-</section>
-</div>
-<script src="/socket.io/socket.io.js"></script>
-<script defer src="/app.js"></script>
+
+  <main class="dashboard">
+    <section class="welcome">
+      <div class="welcome-copy">
+        <p class="eyebrow">YOUR ADVENTURE LOG</p>
+        <h1>Farming overview</h1>
+        <p class="welcome-subtitle">A clear view of your runs, rewards, and reported balances.</p>
+      </div>
+      <div class="report-status">
+        <span class="status-label">Discord report status</span>
+        <strong id="age">Waiting for the first Discord report</strong>
+        <span class="latest-player">Latest player <b id="player">—</b></span>
+      </div>
+    </section>
+
+    <section class="stats-grid" aria-label="Farm statistics">
+      <article class="stat-card stat-primary">
+        <div class="stat-top"><span>Win rate</span><span class="stat-icon" aria-hidden="true">↗</span></div>
+        <strong id="rate">—</strong>
+        <div class="stat-foot"><span id="rateSub">— / —</span><span>overall</span></div>
+        <div class="progress-track"><i id="rateBar"></i></div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-top"><span>Total runs</span><span class="stat-icon" aria-hidden="true">✦</span></div>
+        <strong id="total">—</strong>
+        <span class="stat-caption">All recorded reports</span>
+      </article>
+      <article class="stat-card">
+        <div class="stat-top"><span>Victories</span><span class="stat-icon win-icon" aria-hidden="true">✓</span></div>
+        <strong id="wins" class="green-text">—</strong>
+        <span class="stat-caption">Successful runs</span>
+      </article>
+      <article class="stat-card">
+        <div class="stat-top"><span>Defeats</span><span class="stat-icon loss-icon" aria-hidden="true">×</span></div>
+        <strong id="losses" class="red-text">—</strong>
+        <span class="stat-caption">Runs to review</span>
+      </article>
+    </section>
+
+    <section class="dashboard-grid">
+      <div class="main-column">
+        <section class="panel history-panel" id="history">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">RECENT ACTIVITY</p>
+              <h2>Farm timeline</h2>
+              <p class="panel-subtitle" id="runCount">Loading run history...</p>
+            </div>
+          </div>
+          <div class="timeline-controls">
+            <label class="search-box">
+              <span aria-hidden="true">⌕</span>
+              <input id="search" type="search" placeholder="Search maps or players..." aria-label="Search maps or players">
+            </label>
+            <div class="filter-chips" id="chips" role="group" aria-label="Filter runs by result">
+              <button class="filter-chip on" type="button" data-f="All" aria-pressed="true">All</button>
+              <button class="filter-chip" type="button" data-f="Victory" aria-pressed="false">Wins</button>
+              <button class="filter-chip" type="button" data-f="Defeat" aria-pressed="false">Losses</button>
+            </div>
+          </div>
+          <p id="hiddenNote" class="hidden-note"></p>
+          <div id="runs" class="run-list">
+            <div class="loading-state">Loading run history...</div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="side-column" aria-label="Farm details">
+        <section class="panel balance-panel">
+          <div class="panel-heading compact-heading">
+            <div><p class="eyebrow">PLAYER INVENTORY</p><h2>Reported balances</h2></div>
+            <span class="source-tag">Latest report</span>
+          </div>
+          <div class="balance-grid" id="tiles"></div>
+        </section>
+
+        <section class="panel chart-panel" id="activity">
+          <div class="panel-heading compact-heading">
+            <div><p class="eyebrow">PERFORMANCE</p><h2>Last 40 runs</h2></div>
+            <span class="chart-legend"><i class="legend-win"></i>Wins <i class="legend-loss"></i>Losses</span>
+          </div>
+          <div class="chart" id="chart"><div class="loading-state">Loading activity...</div></div>
+          <div class="chart-axis"><span>Earlier</span><span>Recent</span></div>
+        </section>
+
+        <section class="panel pace-panel" id="ratesCard" hidden>
+          <div class="panel-heading compact-heading">
+            <div><p class="eyebrow">EFFICIENCY</p><h2>Farming pace</h2></div>
+            <span id="rateNote" class="panel-subtitle"></span>
+          </div>
+          <div class="pace-grid" id="rates"></div>
+        </section>
+
+        <section class="panel inventory-panel" id="items">
+          <div class="panel-heading compact-heading">
+            <div><p class="eyebrow">COLLECTED REWARDS</p><h2>Reward inventory</h2></div>
+            <span id="itemCount" class="source-tag"></span>
+          </div>
+          <div class="reward-grid" id="rewards"><div class="loading-state">Loading rewards...</div></div>
+          <button id="moreItems" class="text-button" type="button" hidden>View all rewards</button>
+        </section>
+
+        <section class="panel tools-panel">
+          <div>
+            <h2>Dashboard tools</h2>
+            <p>Clear saved run history and start a fresh count.</p>
+          </div>
+          <button id="clear" class="button button-danger" type="button">Clear history</button>
+        </section>
+      </aside>
+    </section>
+
+    <footer class="page-footer">
+      <span>Anime Adventures Farm Dashboard</span>
+      <span>Balances reflect the latest Discord report. Reward totals are collected since the last history clear.</span>
+    </footer>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script defer src="/app.js"></script>
 </body>
 </html>
+

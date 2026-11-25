@@ -1,136 +1,389 @@
-const $=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const fmt=n=>Number(n||0).toLocaleString('en-US');
-const compact=n=>new Intl.NumberFormat('en',{notation:'compact',maximumFractionDigits:1}).format(Number(n||0));
-const dt=s=>s?new Date(s).toLocaleString('en-GB',{dateStyle:'short',timeStyle:'short'}):'—';
-const hhmm=s=>new Date(s).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false});
-const dayKey=s=>new Date(s).toDateString();
-const dayLabel=s=>(dayKey(s)===new Date().toDateString()?'Today · ':'')+new Date(s).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
-const hue=s=>[...String(s)].reduce((a,c)=>(a*31+c.charCodeAt(0))%360,7);
+"use strict";
 
-let allRuns=[],allRewards=[],resultFilter='All',icons=[],mapIcons=[];
-const HIDDEN=/holiday star/i; // removed from the game
-// Hidden from the timeline: test pings, and runs whose map the parser couldn't read.
-// Defeats are always shown (a lost run is real even when its map name is unreadable).
-const UNREAD={test:r=>/test notification/i.test(r.map)||(/^unknown$/i.test(r.map)&&r.result!=='Defeat')};
+const $ = (id) => document.getElementById(id);
+const escapeHTML = (value) => String(value ?? "").replace(/[&<>"']/g, (character) => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+}[character]));
+const formatNumber = (value) => Number(value || 0).toLocaleString("en-US");
+const compactNumber = (value) => new Intl.NumberFormat("en", {
+  notation: "compact", maximumFractionDigits: 1
+}).format(Number(value || 0));
+const formatDateTime = (value) => value
+  ? new Date(value).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })
+  : "—";
+const formatTime = (value) => new Date(value).toLocaleTimeString("en-GB", {
+  hour: "2-digit", minute: "2-digit", hour12: false
+});
+const dateKey = (value) => new Date(value).toDateString();
+const dateLabel = (value) => (dateKey(value) === new Date().toDateString() ? "Today" : new Date(value)
+  .toLocaleDateString("en-GB", { day: "numeric", month: "short" }));
+const hueFor = (value) => [...String(value)].reduce((total, character) =>
+  (total * 31 + character.charCodeAt(0)) % 360, 7);
+const normalizeName = (value) => String(value).toLowerCase().replace(/[^a-z0-9]/g, "").replace(/s$/, "");
+const normalizeMap = (value) => String(value).toLowerCase().replace(/[^a-z0-9]/g, "");
 
-// Fandom wiki icons (public/assets/items) matched by name; fan-made SVG as fallback.
-const svgFallback=[['summer pearl','pearl'],['gem','gem'],['money','coin'],['ore','ore'],['remnant','shard'],['portal','portal'],['potion','potion'],['talisman','talisman'],['sprig','sprig'],['tome','tome'],['ring','ring']];
-const norm=s=>String(s).toLowerCase().replace(/[^a-z0-9]/g,'').replace(/s$/,'');
-fetch('/assets/items/manifest.json').then(r=>r.json()).then(m=>{icons=Object.entries(m).map(([n,f])=>[norm(n),f]);render()}).catch(()=>{});
-function asset(name){
-  const k=norm(name==='Money'?'Gold':name);
-  const w=icons.find(([n])=>n===k)||icons.find(([n])=>k.length>=4&&((k.length>=5&&n.includes(k))||(n.length>=5&&k.includes(n))));
-  if(w)return '/assets/items/'+w[1];
-  const key=String(name).toLowerCase();
-  return '/assets/'+(svgFallback.find(([t])=>key.includes(t))||['','chest'])[1]+'.svg';
-}
+let runs = [];
+let rewards = [];
+let itemIcons = [];
+let mapIcons = [];
+let currentFilter = "All";
+let expandedRewards = false;
+let latestReportAt = null;
 
-const slots=[{re:/^gems?$/i,label:'Gems',icon:'Gems'},{re:/^(gold|money|coins?)$/i,label:'Gold',icon:'Gold'},{re:/summer ?pearl/i,label:'SummerPearls',icon:'Summer Pearls'},{re:/trait.*reroll/i,label:'Trait Reroll',icon:'Trait Reroll'}];
-const slotOf=n=>slots.findIndex(s=>s.re.test(n));
-const mnorm=s=>String(s).toLowerCase().replace(/[^a-z0-9]/g,'');
-fetch('/assets/maps/manifest.json').then(r=>r.json()).then(m=>{mapIcons=Object.entries(m).map(([n,f])=>[mnorm(n),f]);render()}).catch(()=>{});
-function mapImg(name){const full=mnorm(name),base=mnorm(String(name).split('(')[0]);const w=mapIcons.find(([n])=>n===full)||mapIcons.find(([n])=>n===base);return w?'/assets/maps/'+w[1]:''}
-// Top tiles show the in-game balance reported by the newest webhook message (includes pre-dashboard history).
-// Gems/Gold come from the "Balance" line (🪙 / 💎); other items from the "→ total" of their newest reward.
-// shortcut: falls back to summed rewards if the balance can't be parsed.
-const balNum=(b,emoji)=>{const m=String(b||'').match(new RegExp(emoji+'\\s*([\\d,]+)'));return m?Number(m[1].replace(/,/g,'')):null};
-function balanceOf(s){
-  const e={Gems:'💎',Gold:'🪙'}[s.icon];
-  if(e){const v=balNum(allRuns[0]?.balances,e);if(v!=null)return v}
-  for(const r of allRuns){const x=(r.rewards||[]).find(x=>s.re.test(x.item)&&x.total!=null);if(x)return x.total}
-  return allRewards.filter(([n])=>s.re.test(n)).reduce((a,[,v])=>a+v,0);
-}
-function renderTiles(){
-  $('tiles').innerHTML=slots.map(s=>{const c=balanceOf(s);return `<div class="tile"><img src="${asset(s.icon)}" alt=""><div><b>${fmt(c)}</b><span>${s.label}</span></div></div>`}).join('');
-}
-function renderRewards(){
-  const rest=allRewards.filter(([n])=>slotOf(n)<0);
-  $('itemCount').textContent=rest.length+' items';
-  $('items').style.display=$('rewards').style.display=rest.length?'':'none'; // nothing besides the 4 top tiles => hide the section
-  $('rewards').innerHTML=rest.map(([n,c])=>`<div class="item" style="--c:hsl(${hue(n)} 70% 62%)"><strong>${compact(c)}</strong><img loading="lazy" src="${asset(n)}" alt=""><span title="${esc(n)}">${esc(n)}</span></div>`).join('')||'<div class="skeleton">No rewards yet</div>';
-}
-function thumb(map){const img=mapImg(map);return `<div class="thumb" style="--h:${hue(map)};${img?`background-image:linear-gradient(#0000 35%,#000b),url('${img}')`:''}"><span>${esc(map||'Unknown')}</span></div>`}
-function renderRuns(){
-  const q=$('search').value.toLowerCase();
-  // Unknown = map the parser couldn't read; hidden from the timeline but still counted in stats/rewards.
-  const nHidden=allRuns.filter(UNREAD.test).length;
-  $('hiddenNote').textContent=nHidden?`${nHidden} runs have an unreadable map name (hidden from timeline · from latest 100)`:'';
-  const list=allRuns.filter(r=>!UNREAD.test(r)&&(resultFilter==='All'||r.result===resultFilter)&&`${r.map} ${r.player}`.toLowerCase().includes(q));
-  const wins=list.filter(r=>r.result==='Victory').length;
-  $('runCount').textContent=`${list.length} runs · ${wins} wins (latest 100 loaded)`;
-  let lastDay='';
-  $('runs').innerHTML=list.map(r=>{
-    const win=r.result==='Victory',k=dayKey(r.created_at);
-    const head=k!==lastDay?`<div class="day"><span>${dayLabel(r.created_at)}</span></div>`:'';lastDay=k;
-    const rw=(r.rewards||[]).filter(x=>!HIDDEN.test(x.item)).map(x=>`<span class="rw"><img src="${asset(x.item)}" alt=""><span>${esc(x.item)}</span><b>×${fmt(x.amount)}</b></span>`).join('')||'<span class="rw none">No rewards recorded</span>';
-    const meta=[r.difficulty,r.wave?'Wave '+esc(r.wave):'',r.duration].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('');
-    return head+`<div class="run ${win?'win':'loss'}"><div class="t">${hhmm(r.created_at)}</div><div class="line"><span class="node">${win?'✓':'✕'}</span></div><div class="rcard">${thumb(r.map)}<div class="rbody"><div class="rtop"><span class="res ${win?'w':'l'}">${win?'WIN':'LOSS'}</span><b title="${esc(r.map)}">${esc(r.map||'Unknown map')}</b>${r.mode?`<span class="tag">${esc(r.mode)}</span>`:''}<span class="rmeta">${meta}</span></div><div class="chipsr">${rw}</div></div></div></div>`;
-  }).join('')||(allRuns.length===0?'<div class="empty-state"><span class="empty-mark">✦</span><h2>No farm reports yet</h2><p>When your Discord webhook posts a run report, it will show up here automatically.</p><span class="empty-hint">Your dashboard is connected and waiting for its first report.</span></div>':'<div class="empty-state compact"><h2>No matching runs</h2><p>Try another search or switch the result filter to see more runs.</p></div>');
-}
-function renderChart(){
-  const runs=allRuns.slice(0,40).reverse();
-  if(!runs.length){$('chart').innerHTML='<div class="skeleton">No run data yet</div>';return}
-  const step=676/runs.length,bars=runs.map((r,i)=>{const h=r.result==='Victory'?60:30;return `<rect x="${12+i*step}" y="${70-h}" width="${Math.max(4,step-3)}" height="${h}" rx="2" fill="${r.result==='Victory'?'#59b897':'#de7b83'}" opacity=".9"/>`}).join('');
-  $('chart').innerHTML=`<svg viewBox="0 0 700 74" preserveAspectRatio="none" role="img" aria-label="Recent run results"><line x1="0" y1="70" x2="700" y2="70" stroke="#dce8f2"/>${bars}</svg>`;
-}
-const STALE_MIN=40; // no report for this long => likely not farming
-let lastReportAt=null;
-function renderAge(){
-  const el=$('age');
-  if(!lastReportAt){el.textContent='Waiting for the first Discord report';el.className='age';return}
-  const m=Math.max(0,Math.floor((Date.now()-new Date(lastReportAt))/6e4));
-  const t=m<1?'just now':m<60?m+' min ago':Math.floor(m/60)+' hr '+(m%60)+' min ago';
-  el.textContent=(m>STALE_MIN?'⚠ No report for ':'Latest report ')+t;
-  el.className='age'+(m>STALE_MIN?' stale':'');
-}
-function renderRates(){
-  const rs=allRuns,card=$('ratesCard');
-  const hrs=rs.length>1?(new Date(rs[0].created_at)-new Date(rs[rs.length-1].created_at))/36e5:0;
-  card.hidden=hrs<0.25; // too little data for a meaningful rate
-  if(card.hidden)return;
-  $('rateNote').textContent=`Based on ${rs.length} runs · ${hrs.toFixed(1)} hr`;
-  const sum=re=>rs.reduce((a,r)=>a+(r.rewards||[]).filter(x=>re.test(x.item)).reduce((b,x)=>b+x.amount,0),0);
-  const tiles=[`<div class="tile"><div><b>${(rs.length/hrs).toFixed(1)}</b><span>runs / hr</span></div></div>`];
-  for(const s of slots){const v=sum(s.re);if(v>0)tiles.push(`<div class="tile"><img src="${asset(s.icon)}" alt=""><div><b>${fmt(Math.round(v/hrs))}</b><span>${s.label} / hr</span></div></div>`)}
-  $('rates').innerHTML=tiles.join('');
-}
-function render(){renderTiles();renderRewards();renderRuns();renderChart();renderRates()}
-
-async function load(){
-  try{
-    const res=await fetch('/api/dashboard',{cache:'no-store'});
-    if(!res.ok)throw Error('HTTP '+res.status);
-    const data=await res.json(),s=data.stats||{},r0=(data.runs||[])[0];
-    // Normalize rows already stored with "## " prefixes; player can be "Name · Level 245 [..]".
-    allRuns=(data.runs||[]).map(r=>({...r,map:String(r.map??'').replace(/^[#\s]+/,'').trim(),player:String(r.player??'').split(' · ')[0].trim()}));
-    // "(Limited)" variants are the same item; merge their counts.
-    const merged={};
-    for(const [n,v] of Object.entries(data.totals||{})){if(HIDDEN.test(n))continue;const k=n.replace(/\s*\(limited\)\s*$/i,'');merged[k]=(merged[k]||0)+v}
-    allRewards=Object.entries(merged).sort((a,b)=>b[1]-a[1]);
-    const total=Number(s.total),rate=total?100*Number(s.wins)/total:0;
-    $('total').textContent=fmt(s.total);$('wins').textContent=fmt(s.wins);$('losses').textContent=fmt(s.losses);
-    $('rate').textContent=rate.toFixed(1)+'%';$('rateSub').textContent=`${fmt(s.wins)} / ${fmt(s.total)}`;$('rateBar').style.width=rate+'%';
-    $('player').textContent=allRuns[0]?.player||'—';lastReportAt=data.lastReport;renderAge();
-    render();
-  }catch(err){$('runs').innerHTML='<div class="skeleton">Could not load dashboard data: '+esc(err.message)+'</div>'}
-}
-
-$('search').oninput=renderRuns;
-$('chips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;resultFilter=b.dataset.f;document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));renderRuns()};
-$('refresh').onclick=load;
-$('clear').onclick=async()=>{
-  if(!confirm('Clear all run history and statistics? This cannot be undone.'))return;
-  if(!confirm('Confirm once more: all run data will be permanently deleted.'))return;
-  try{const r=await fetch('/api/clear',{method:'POST',headers:{'x-confirm':'clear'}});if(!r.ok)throw Error('HTTP '+r.status);await load()}
-  catch(e){alert('Could not clear history: '+e.message)}
+const hiddenReward = /holiday star/i;
+const hiddenRun = {
+  test: (run) => /test notification/i.test(run.map || ""),
+  unreadable: (run) => /^unknown$/i.test(run.map || "") && run.result !== "Defeat"
 };
+const balanceSlots = [
+  { pattern: /^gems?$/i, label: "Gems", icon: "Gems" },
+  { pattern: /^(gold|money|coins?)$/i, label: "Gold", icon: "Gold" },
+  { pattern: /summer ?pearls?/i, label: "Summer Pearls", icon: "Summer Pearls" },
+  { pattern: /trait.*reroll/i, label: "Trait Reroll", icon: "Trait Reroll" }
+];
+const fallbackIcons = [
+  ["summer pearl", "pearl"], ["gem", "gem"], ["money", "coin"], ["ore", "ore"],
+  ["remnant", "shard"], ["portal", "portal"], ["potion", "potion"], ["talisman", "talisman"],
+  ["sprig", "sprig"], ["tome", "tome"], ["ring", "ring"]
+];
 
-const socket=io();
-socket.on('connect',()=>{$('connection').textContent='Connected';$('dot').style.background='#59b897';load()});
-socket.on('disconnect',()=>{$('connection').textContent='Disconnected';$('dot').style.background='#de7b83'});
-socket.on('updated',load);
-socket.on('connect_error',()=>{$('connection').textContent='API mode';$('dot').style.background='#e6ad4e'});
-load();
-setInterval(renderAge,30000);
-setInterval(load,60000); // keep working if WebSocket is unavailable
+function lookupIcon(entries, label, normalizer) {
+  const key = normalizer(label);
+  return entries.find(([name]) => name === key)
+    || entries.find(([name]) => key.length >= 4 && (
+      (key.length >= 5 && name.includes(key)) || (name.length >= 5 && key.includes(name))
+    ));
+}
+
+function itemImage(name) {
+  const match = lookupIcon(itemIcons, name === "Money" ? "Gold" : name, normalizeName);
+  if (match) return "/assets/items/" + match[1];
+  const fallback = fallbackIcons.find(([term]) => String(name).toLowerCase().includes(term));
+  return "/assets/" + (fallback ? fallback[1] : "chest") + ".svg";
+}
+
+function mapImage(name) {
+  const fullName = normalizeMap(name);
+  const baseName = normalizeMap(String(name).split("(")[0]);
+  const match = mapIcons.find(([key]) => key === fullName) || mapIcons.find(([key]) => key === baseName);
+  return match ? "/assets/maps/" + match[1] : "";
+}
+
+function balanceFromReport(slot) {
+  if (slot.icon === "Gems" || slot.icon === "Gold") {
+    const emoji = slot.icon === "Gems" ? "💎" : "🪙";
+    const match = String(runs[0]?.balances || "").match(new RegExp(emoji + "\\s*([\\d,]+)"));
+    if (match) return Number(match[1].replace(/,/g, ""));
+  }
+  for (const run of runs) {
+    const reward = (run.rewards || []).find((entry) =>
+      slot.pattern.test(entry.item) && entry.total != null
+    );
+    if (reward) return Number(reward.total);
+  }
+  return rewards.filter(([name]) => slot.pattern.test(name))
+    .reduce((total, [, amount]) => total + Number(amount || 0), 0);
+}
+
+function renderBalances() {
+  $("tiles").innerHTML = balanceSlots.map((slot) => {
+    const amount = formatNumber(balanceFromReport(slot));
+    return '<div class="balance-item"><img src="' + itemImage(slot.icon) +
+      '" alt=""><div><strong>' + amount + '</strong><span>' + escapeHTML(slot.label) +
+      '</span></div></div>';
+  }).join("");
+  attachImageFallbacks($("tiles"));
+}
+
+function renderStats(stats) {
+  const total = Number(stats.total || 0);
+  const wins = Number(stats.wins || 0);
+  const losses = Number(stats.losses || 0);
+  const winRate = total ? (100 * wins / total) : 0;
+  $("total").textContent = formatNumber(total);
+  $("wins").textContent = formatNumber(wins);
+  $("losses").textContent = formatNumber(losses);
+  $("rate").textContent = winRate.toFixed(1) + "%";
+  $("rateSub").textContent = formatNumber(wins) + " / " + formatNumber(total);
+  $("rateBar").style.width = Math.min(100, winRate) + "%";
+}
+
+function renderRewards() {
+  const inventory = rewards.filter(([name]) =>
+    !balanceSlots.some((slot) => slot.pattern.test(name))
+  );
+  $("itemCount").textContent = inventory.length + (inventory.length === 1 ? " item" : " items");
+  $("items").hidden = inventory.length === 0;
+  const visibleItems = expandedRewards ? inventory : inventory.slice(0, 9);
+  $("rewards").innerHTML = visibleItems.map(([name, amount]) =>
+    '<div class="reward-item" style="--item-color:hsl(' + hueFor(name) + ' 70% 62%)">' +
+      '<strong>' + compactNumber(amount) + '</strong>' +
+      '<img loading="lazy" src="' + itemImage(name) + '" alt="">' +
+      '<span title="' + escapeHTML(name) + '">' + escapeHTML(name) + '</span></div>'
+  ).join("") || '<div class="loading-state">No reward items recorded yet.</div>';
+  $("moreItems").hidden = inventory.length <= 9;
+  $("moreItems").textContent = expandedRewards ? "Show fewer rewards" : "View all rewards";
+  attachImageFallbacks($("rewards"));
+}
+
+function renderEmptyState(title, message, hint) {
+  return '<div class="empty-state"><span class="empty-mark" aria-hidden="true">✦</span>' +
+    '<h3>' + title + '</h3><p>' + message + '</p>' +
+    (hint ? '<span class="empty-hint">' + hint + '</span>' : "") + '</div>';
+}
+
+function renderRuns() {
+  const query = $("search").value.trim().toLowerCase();
+  const unreadCount = runs.filter((run) => hiddenRun.test(run) || hiddenRun.unreadable(run)).length;
+  $("hiddenNote").textContent = unreadCount
+    ? unreadCount + " unreadable or test reports are hidden from the timeline."
+    : "";
+
+  const visibleRuns = runs.filter((run) =>
+    !hiddenRun.test(run) &&
+    !(hiddenRun.unreadable(run) && run.result !== "Defeat") &&
+    (currentFilter === "All" || run.result === currentFilter) &&
+    (String(run.map) + " " + String(run.player)).toLowerCase().includes(query)
+  );
+  const victories = visibleRuns.filter((run) => run.result === "Victory").length;
+  $("runCount").textContent = visibleRuns.length + " runs · " + victories +
+    " wins · latest 100 reports";
+
+  if (runs.length === 0) {
+    $("runs").innerHTML = renderEmptyState(
+      "No farm reports yet",
+      "When your Discord webhook posts a run report, it will appear here automatically.",
+      "The dashboard is connected and waiting for its first report."
+    );
+    return;
+  }
+  if (visibleRuns.length === 0) {
+    $("runs").innerHTML = renderEmptyState(
+      "No matching runs",
+      "Try a different search or switch the result filter to see more activity."
+    );
+    return;
+  }
+
+  let previousDay = "";
+  const markup = visibleRuns.map((run) => {
+    const isVictory = run.result === "Victory";
+    const currentDay = dateKey(run.created_at);
+    const divider = currentDay !== previousDay
+      ? '<div class="day-divider">' + dateLabel(run.created_at) + '</div>'
+      : "";
+    previousDay = currentDay;
+
+    const map = run.map || "Unknown map";
+    const image = mapImage(map);
+    const background = image
+      ? 'background-image:linear-gradient(0deg,rgba(21,48,69,.74),rgba(21,48,69,.04) 76%),url(&quot;' +
+        image + '&quot;)'
+      : "";
+    const mapArt = '<div class="map-art" role="img" aria-label="' + escapeHTML(map) +
+      '" style="--map-hue:' + hueFor(map) + ';' + background + '"><span>' +
+      escapeHTML(map) + '</span></div>';
+    const resultLabel = isVictory ? "Victory" : "Defeat";
+    const resultClass = isVictory ? "win" : "loss";
+    const tags = [
+      run.mode ? '<span class="run-tag">' + escapeHTML(run.mode) + '</span>' : "",
+      run.difficulty ? '<span class="run-tag">' + escapeHTML(run.difficulty) + '</span>' : ""
+    ].filter(Boolean).join("");
+    const metadata = [
+      run.wave ? "Wave " + escapeHTML(run.wave) : "",
+      run.duration ? escapeHTML(run.duration) : "",
+      formatTime(run.created_at)
+    ].filter(Boolean).map((value) => "<span>" + value + "</span>").join("");
+    const dropMarkup = (run.rewards || []).filter((entry) => !hiddenReward.test(entry.item))
+      .slice(0, 4).map((entry) =>
+        '<span class="reward-chip"><img src="' + itemImage(entry.item) + '" alt="">' +
+        '<span>' + escapeHTML(entry.item) + '</span><b>×' +
+        formatNumber(entry.amount) + '</b></span>'
+      ).join("") || '<span class="reward-chip">No rewards recorded</span>';
+
+    return divider + '<article class="run-card">' + mapArt + '<div class="run-content">' +
+      '<div class="run-heading"><span class="run-result ' + resultClass + '">' +
+      resultLabel + '</span><span class="run-map-name" title="' + escapeHTML(map) + '">' +
+      escapeHTML(map) + '</span>' + tags + '</div>' +
+      '<div class="run-meta">' + metadata + '</div>' +
+      '<div class="reward-chips">' + dropMarkup + '</div></div></article>';
+  }).join("");
+  $("runs").innerHTML = markup;
+  attachImageFallbacks($("runs"));
+}
+
+function renderChart() {
+  const recentRuns = runs.slice(0, 40).reverse();
+  if (recentRuns.length === 0) {
+    $("chart").innerHTML = '<div class="chart-empty">Run results will appear here.</div>';
+    return;
+  }
+  const step = 700 / recentRuns.length;
+  const bars = recentRuns.map((run, index) => {
+    const height = run.result === "Victory" ? 74 : 38;
+    const fill = run.result === "Victory" ? "#58b190" : "#e18a91";
+    return '<rect x="' + (index * step + 3) + '" y="' + (96 - height) +
+      '" width="' + Math.max(3, step - 3) + '" height="' + height +
+      '" rx="3" fill="' + fill + '" opacity=".92"></rect>';
+  }).join("");
+  $("chart").innerHTML =
+    '<svg viewBox="0 0 700 104" preserveAspectRatio="none" role="img" aria-label="Recent run results">' +
+    '<line x1="0" y1="96" x2="700" y2="96" stroke="#e2edf5"></line>' +
+    '<line x1="0" y1="48" x2="700" y2="48" stroke="#edf3f8" stroke-dasharray="4 6"></line>' +
+    bars + '</svg>';
+}
+
+const staleAfterMinutes = 40;
+function renderReportAge() {
+  if (!latestReportAt) {
+    $("age").textContent = "Waiting for the first Discord report";
+    $("age").classList.remove("stale");
+    return;
+  }
+  const minutes = Math.max(0, Math.floor((Date.now() - new Date(latestReportAt)) / 60000));
+  const ageText = minutes < 1 ? "just now"
+    : minutes < 60 ? minutes + (minutes === 1 ? " minute ago" : " minutes ago")
+    : Math.floor(minutes / 60) + " hr " + (minutes % 60) + " min ago";
+  const isStale = minutes > staleAfterMinutes;
+  $("age").textContent = (isStale ? "No report for " : "Latest report ") + ageText;
+  $("age").classList.toggle("stale", isStale);
+}
+
+function renderFarmingPace() {
+  const card = $("ratesCard");
+  const hours = runs.length > 1
+    ? (new Date(runs[0].created_at) - new Date(runs[runs.length - 1].created_at)) / 3600000
+    : 0;
+  card.hidden = hours < .25;
+  if (card.hidden) return;
+
+  $("rateNote").textContent = "Based on " + runs.length + " runs · " + hours.toFixed(1) + " hr";
+  const amountFor = (pattern) => runs.reduce((sum, run) =>
+    sum + (run.rewards || []).filter((entry) => pattern.test(entry.item))
+      .reduce((runSum, entry) => runSum + Number(entry.amount || 0), 0), 0);
+  const pace = ['<div class="pace-item"><strong>' + (runs.length / hours).toFixed(1) +
+    '</strong><span>runs / hr</span></div>'];
+  balanceSlots.forEach((slot) => {
+    const amount = amountFor(slot.pattern);
+    if (amount > 0) pace.push('<div class="pace-item"><strong>' +
+      formatNumber(Math.round(amount / hours)) + '</strong><span>' +
+      escapeHTML(slot.label) + ' / hr</span></div>');
+  });
+  $("rates").innerHTML = pace.join("");
+}
+
+function attachImageFallbacks(root) {
+  root.querySelectorAll("img").forEach((image) => {
+    image.onerror = () => {
+      image.onerror = null;
+      image.src = "/assets/chest.svg";
+    };
+  });
+}
+
+function renderDashboard(stats) {
+  renderStats(stats);
+  renderBalances();
+  renderRewards();
+  renderRuns();
+  renderChart();
+  renderFarmingPace();
+}
+
+async function loadDashboard() {
+  try {
+    const response = await fetch("/api/dashboard", { cache: "no-store" });
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    const data = await response.json();
+    runs = (data.runs || []).map((run) => ({
+      ...run,
+      map: String(run.map ?? "").replace(/^[#\s]+/, "").trim(),
+      player: String(run.player ?? "").split(" · ")[0].trim()
+    }));
+    const mergedRewards = {};
+    Object.entries(data.totals || {}).forEach(([name, amount]) => {
+      if (hiddenReward.test(name)) return;
+      const normalizedName = name.replace(/\s*\(limited\)\s*$/i, "");
+      mergedRewards[normalizedName] = (mergedRewards[normalizedName] || 0) + Number(amount || 0);
+    });
+    rewards = Object.entries(mergedRewards).sort((left, right) => right[1] - left[1]);
+    latestReportAt = data.lastReport || runs[0]?.created_at || null;
+    $("player").textContent = runs[0]?.player || "—";
+    renderReportAge();
+    renderDashboard(data.stats || {});
+  } catch (error) {
+    $("runs").innerHTML = '<div class="empty-state compact"><h3>Could not load dashboard</h3><p>' +
+      escapeHTML(error.message) + '</p><span class="empty-hint">Try refreshing in a moment.</span></div>';
+    $("chart").innerHTML = '<div class="chart-empty">Activity data is unavailable.</div>';
+  }
+}
+
+async function loadManifests() {
+  const [itemResponse, mapResponse] = await Promise.all([
+    fetch("/assets/items/manifest.json").catch(() => null),
+    fetch("/assets/maps/manifest.json").catch(() => null)
+  ]);
+  if (itemResponse?.ok) {
+    const manifest = await itemResponse.json().catch(() => ({}));
+    itemIcons = Object.entries(manifest).map(([name, file]) => [normalizeName(name), file]);
+  }
+  if (mapResponse?.ok) {
+    const manifest = await mapResponse.json().catch(() => ({}));
+    mapIcons = Object.entries(manifest).map(([name, file]) => [normalizeMap(name), file]);
+  }
+  renderBalances();
+  renderRewards();
+  renderRuns();
+  renderChart();
+  renderFarmingPace();
+}
+
+$("search").addEventListener("input", renderRuns);
+$("chips").addEventListener("click", (event) => {
+  const button = event.target.closest(".filter-chip");
+  if (!button) return;
+  currentFilter = button.dataset.f;
+  document.querySelectorAll(".filter-chip").forEach((chip) => {
+    const selected = chip === button;
+    chip.classList.toggle("on", selected);
+    chip.setAttribute("aria-pressed", String(selected));
+  });
+  renderRuns();
+});
+$("refresh").addEventListener("click", loadDashboard);
+$("moreItems").addEventListener("click", () => {
+  expandedRewards = !expandedRewards;
+  renderRewards();
+});
+$("clear").addEventListener("click", async () => {
+  if (!confirm("Clear all run history and statistics? This cannot be undone.")) return;
+  if (!confirm("Confirm once more: all run data will be permanently deleted.")) return;
+  try {
+    const response = await fetch("/api/clear", {
+      method: "POST", headers: { "x-confirm": "clear" }
+    });
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    await loadDashboard();
+  } catch (error) {
+    alert("Could not clear history: " + error.message);
+  }
+});
+
+function setConnection(label, state) {
+  $("connection").textContent = label;
+  $("dot").className = "connection-dot" + (state ? " " + state : "");
+}
+const socket = typeof io === "function" ? io() : null;
+if (socket) {
+  socket.on("connect", () => { setConnection("Live updates on", "online"); loadDashboard(); });
+  socket.on("disconnect", () => setConnection("Live updates offline", "offline"));
+  socket.on("connect_error", () => setConnection("API mode", ""));
+} else {
+  setConnection("API mode", "");
+}
+loadManifests();
+loadDashboard();
+setInterval(renderReportAge, 30000);
+setInterval(loadDashboard, 60000);
+
+
