@@ -82,7 +82,12 @@ function mapImage(name, sourceUrl) {
 }
 
 function runModeLabel(run) {
-  return String(run.mode || "").toLowerCase() === "raid" && Number(run.wave) === 50
+  const earnedSummerPearls = (run.rewards || []).some((entry) =>
+    /summer ?pearls?/i.test(entry.item || "")
+  );
+  return earnedSummerPearls || (
+    String(run.mode || "").toLowerCase() === "raid" && Number(run.wave) === 50
+  )
     ? "Summer Event"
     : run.mode || "";
 }
@@ -599,6 +604,27 @@ function setConnection(label, state) {
   $("connection").textContent = label;
   $("dot").className = "connection-dot" + (state ? " " + state : "");
 }
+const themeStorageKey = "aa-farm-dashboard-theme";
+function applyTheme(theme, persist = false) {
+  const isDark = theme === "dark";
+  document.documentElement.dataset.theme = isDark ? "dark" : "light";
+  const nextThemeLabel = isDark ? "light" : "dark";
+  $("themeToggle").setAttribute("aria-pressed", String(isDark));
+  $("themeToggle").setAttribute("aria-label", "Switch to " + nextThemeLabel + " mode");
+  $("themeToggle").title = "Switch to " + nextThemeLabel + " mode";
+  $("themeIcon").textContent = isDark ? "☀" : "☾";
+  $("themeLabel").textContent = isDark ? "Light" : "Dark";
+  document.querySelector('meta[name="theme-color"]').content = isDark ? "#0d141c" : "#edf7ff";
+  if (persist) {
+    try { localStorage.setItem(themeStorageKey, isDark ? "dark" : "light"); } catch {}
+  }
+}
+let initialTheme = "light";
+try { if (localStorage.getItem(themeStorageKey) === "dark") initialTheme = "dark"; } catch {}
+applyTheme(initialTheme);
+$("themeToggle").addEventListener("click", () => {
+  applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark", true);
+});
 const socket = typeof io === "function" ? io() : null;
 if (socket) {
   socket.on("connect", () => { setConnection("Live updates on", "online"); loadDashboard(); });

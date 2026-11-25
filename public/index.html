@@ -6,6 +6,9 @@
   <meta name="theme-color" content="#edf7ff">
   <meta name="description" content="A live Anime Adventures farm dashboard.">
   <title>Anime Adventures | Farm Dashboard</title>
+  <script>
+    try { if (localStorage.getItem("aa-farm-dashboard-theme") === "dark") document.documentElement.dataset.theme = "dark"; } catch {}
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -24,6 +27,9 @@
       </div>
       <button id="refresh" class="button button-quiet" type="button">
         <span aria-hidden="true">↻</span><span>Refresh</span>
+      </button>
+      <button id="themeToggle" class="button button-quiet theme-button" type="button" aria-label="Switch to dark mode" aria-pressed="false" title="Switch to dark mode">
+        <span id="themeIcon" aria-hidden="true">☾</span><span id="themeLabel">Dark</span>
       </button>
     </div>
   </header>
