@@ -78,7 +78,7 @@ function mapImage(name, sourceUrl) {
     const parsed = new URL(sourceUrl || "");
     if (parsed.protocol === "https:") remote = parsed.href;
   } catch {}
-  return { src: remote || local, fallback: remote && local && remote !== local ? local : "" };
+  return { src: local || remote, fallback: local && remote && remote !== local ? remote : "" };
 }
 
 function runModeLabel(run) {
