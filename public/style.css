@@ -589,3 +589,6 @@ html[data-theme="dark"] .hidden-note { color: #e3b873; }
 .run-detail-item-copy .run-detail-item-name { flex: 1 1 auto; min-width: 0; }
 .run-detail-item-copy .rarity-badge { flex: 0 0 auto; padding: 1px 4px; font-size: 6px; }
 .reward-item .rarity-badge { display: inline-flex; }
+
+.run-detail-item-name { overflow: hidden; color: #6d879c; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+html[data-theme="dark"] .run-detail-item-name { color: #afc0cd; }
