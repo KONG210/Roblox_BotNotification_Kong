@@ -84,7 +84,7 @@
   "Divine Wish": "divine-wish.webp",
   "Trait Reroll": "reroll-token.png",
   "Reroll Token": "reroll-token.png",
-  "Sky Portal": "sky-portal.png",
+  "Sky Portal": "sky-portal-real.png",
   "Summer Pearls": "summer-pearls-real.png",
   "Green Baby": "wiki-green_baby.webp",
   "Experiment X (Imperfect)": "wiki-unit__cell_imperfect.webp",
@@ -151,7 +151,7 @@
   "String Portal": "wiki-portal_item__doflamingo.webp",
   "Mage Mark": "wiki-majin_symbol.webp",
   "Final Disc Fragment": "wiki-disc_final_shard.webp",
-  "Demon Leader's Portal": "wiki-portal_zeldris.webp",
+  "Demon Leader's Portal": "demon-leaders-portal-real.png",
   "Anniversary Starry Ball": "wiki-dragon_ball_anniversary.webp",
   "Amplifying Codex": "wiki-relic_book.webp",
   "Blazing Creme Donut": "wiki-rengoku_donut.webp",
@@ -265,5 +265,9 @@
   "Raijin Drums": "raijin-drums-real.png",
   "Raijin Drum": "raijin-drums-real.png",
   "Captain's Hat": "captains-hat-real.png",
-  "Sunny Star": "sunny-star-real.png"
+  "Sunny Star": "sunny-star-real.png",
+  "Explosion Mage's Portal": "explosion-mages-portal-real.png",
+  "Xplosion Mage's Portal": "explosion-mages-portal-real.png",
+  "Divine Treasure Portal": "divine-treasure-portal-real.png",
+  "Shibuya Portal": "shibuya-portal-real.png"
 }

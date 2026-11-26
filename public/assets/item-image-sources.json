@@ -1223,6 +1223,18 @@
         "Sunny Star"
       ],
       "source": "https://beebom.com/how-to-get-evolved-fishi-obsession-in-anime-adventures/"
+    },
+    {
+      "items": [
+        "Explosion Mage's Portal",
+        "Sky Portal",
+        "Demon Leader's Portal",
+        "Divine Treasure Portal",
+        "Shibuya Portal"
+      ],
+      "source": "https://www.reddit.com/r/AnimeAdventuresRBLX/comments/1xz45gn/is_this_the_portal_for_megumin_if_so_is_it_hard/",
+      "image": "https://i.redd.it/0fobuf5kca2i1.png",
+      "note": "Inventory screenshot with the Explosion Mage's Portal tooltip visible. Cropped original pixels."
     }
   ],
   "mapScreenshots": [
@@ -1230,10 +1242,53 @@
       "map": "Explosion Mage's Portal",
       "source": "https://beebom.com/anime-adventures-megumin-guide/",
       "note": "Actual stage screenshot; not the portal inventory icon."
+    },
+    {
+      "source": "https://github.com/QuantumMacro/Anime-Adventures/releases/tag/v0.76",
+      "archive": "Anime.Adventures.v0.76.Release.zip",
+      "folder": "assets/maps/",
+      "maps": [
+        "Adventurer Town",
+        "Alien Spaceship",
+        "Ant Kingdom",
+        "Assassin Park",
+        "Cursed Festival",
+        "Dungeon Throne",
+        "Fabled Kingdom",
+        "Fiend City",
+        "Future City",
+        "Haunted Academy",
+        "Hellish City",
+        "Magic Hills",
+        "Magic Town",
+        "Misty Village",
+        "Mountain Temple",
+        "Navy Bay",
+        "Nightmare Train",
+        "Otherwordly Plane",
+        "Planet Greenie",
+        "Puppet Island",
+        "Rain Village",
+        "Ruined City",
+        "Sacred Planet",
+        "Sand Village",
+        "Shibuya District",
+        "Sky Aircraft",
+        "Sky Island",
+        "Snowy Kingdom",
+        "Snowy Town",
+        "Space Center",
+        "Spirit World",
+        "Storm Hideout",
+        "Strange Town",
+        "Haunted Academy (Summer)",
+        "Virtual Dungeon",
+        "Walled City"
+      ],
+      "note": "Gameplay screenshots; resized for the dashboard."
     }
   ],
   "stillMissingVerifiedInventoryArt": [
-    "Explosion Mage's Portal",
     "B-Grade Sword",
     "A-Grade Sword",
     "S-Grade Sword",
@@ -1245,7 +1300,6 @@
     "Celestial Compass (Update 21)",
     "Summer Charm",
     "Sky God's Portal",
-    "Sky Portal",
     "Misty Village defenses"
   ]
 }
