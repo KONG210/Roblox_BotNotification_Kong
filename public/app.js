@@ -26,6 +26,7 @@ let runs = [];
 let rewards = [];
 let itemIcons = [];
 let mapIcons = [];
+let itemRarities = new Map();
 let currentFilter = "All";
 let expandedRewards = false;
 const expandedRunIds = new Set();
@@ -47,8 +48,8 @@ const balanceSlots = [
   { pattern: /trait.*reroll/i, label: "Trait Reroll", icon: "Trait Reroll" }
 ];
 const fallbackIcons = [
-  ["summer pearl", "pearl"], ["dawn coin", "coin"], ["coin", "coin"],
-  ["gem", "gem"], ["money", "coin"], ["ore", "ore"],
+  ["summer pearl", "pearl"], ["dawn coin", "coin"], ["scarlet ore", "ore"],
+  ["grade sword", "sword-grade"], ["coin", "coin"], ["gem", "gem"], ["money", "coin"], ["ore", "ore"],
   ["remnant", "shard"], ["portal", "portal"], ["potion", "potion"], ["talisman", "talisman"],
   ["sprig", "sprig"], ["tome", "tome"], ["ring", "ring"]
 ];
@@ -66,6 +67,13 @@ function itemImage(name) {
   if (match) return "/assets/items/" + match[1];
   const fallback = fallbackIcons.find(([term]) => String(name).toLowerCase().includes(term));
   return "/assets/" + (fallback ? fallback[1] : "chest") + ".svg";
+}
+
+function rarityBadge(name) {
+  const rarity = itemRarities.get(normalizeName(name));
+  if (!rarity) return "";
+  const rarityClass = rarity.toLowerCase().replace(/[^a-z]/g, "");
+  return '<small class="rarity-badge rarity-' + rarityClass + '">' + escapeHTML(rarity) + '</small>';
 }
 
 function mapImage(name, sourceUrl) {
@@ -257,7 +265,7 @@ function renderRewards() {
     '<div class="reward-item" style="--item-color:hsl(' + hueFor(name) + ' 70% 62%)">' +
       '<strong>' + compactNumber(amount) + '</strong>' +
       '<img loading="lazy" src="' + itemImage(name) + '" alt="">' +
-      '<span title="' + escapeHTML(name) + '">' + escapeHTML(name) + '</span></div>'
+      '<span title="' + escapeHTML(name) + '">' + escapeHTML(name) + '</span>' + rarityBadge(name) + '</div>'
   ).join("") || '<div class="loading-state">No reward items recorded yet.</div>';
   $("moreItems").hidden = inventory.length <= 9;
   $("moreItems").textContent = expandedRewards ? "Show fewer rewards" : "View all rewards";
@@ -285,7 +293,7 @@ function renderRunDetails(run, index) {
   ).join("");
   const allRewards = (run.rewards || []).map((entry) =>
     '<div class="run-detail-reward"><img loading="lazy" src="' + itemImage(entry.item) + '" alt="">' +
-    '<span>' + escapeHTML(entry.item) + '</span><b>+' + formatNumber(entry.amount) + '</b>' +
+    '<div class="run-detail-item-copy"><span class="run-detail-item-name">' + escapeHTML(entry.item) + '</span>' + rarityBadge(entry.item) + '</div><b>+' + formatNumber(entry.amount) + '</b>' +
     (entry.total == null ? '' : '<small>Total ' + formatNumber(entry.total) + '</small>') + '</div>'
   ).join("") || '<p class="run-details-empty">No reward items were included in this report.</p>';
   const balanceMarkup = run.balances
@@ -533,9 +541,10 @@ async function loadDashboard() {
 }
 
 async function loadManifests() {
-  const [itemResponse, mapResponse] = await Promise.all([
+  const [itemResponse, mapResponse, rarityResponse] = await Promise.all([
     fetch("/assets/items/manifest.json").catch(() => null),
-    fetch("/assets/maps/manifest.json").catch(() => null)
+    fetch("/assets/maps/manifest.json").catch(() => null),
+    fetch("/assets/items/rarity.json").catch(() => null)
   ]);
   if (itemResponse?.ok) {
     const manifest = await itemResponse.json().catch(() => ({}));
@@ -544,6 +553,10 @@ async function loadManifests() {
   if (mapResponse?.ok) {
     const manifest = await mapResponse.json().catch(() => ({}));
     mapIcons = Object.entries(manifest).map(([name, file]) => [normalizeMap(name), file]);
+  }
+  if (rarityResponse?.ok) {
+    const manifest = await rarityResponse.json().catch(() => ({}));
+    itemRarities = new Map(Object.entries(manifest).map(([name, rarity]) => [normalizeName(name), rarity]));
   }
   renderBalances();
   renderRewards();
