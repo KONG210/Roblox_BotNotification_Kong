@@ -19,7 +19,9 @@ const dateLabel = (value) => (dateKey(value) === new Date().toDateString() ? "To
   .toLocaleDateString("en-GB", { day: "numeric", month: "short" }));
 const hueFor = (value) => [...String(value)].reduce((total, character) =>
   (total * 31 + character.charCodeAt(0)) % 360, 7);
-const normalizeName = (value) => String(value).toLowerCase().replace(/[^a-z0-9]/g, "").replace(/s$/, "");
+const normalizeName = (value) => String(value).toLowerCase()
+  .replace(/\(\s*(?:tier\s*\d+|limited)\s*\)/g, "")
+  .replace(/^xplosion\b/, "explosion").replace(/[^a-z0-9]/g, "").replace(/s$/, "");
 const normalizeMap = (value) => String(value).toLowerCase().replace(/[^a-z0-9]/g, "");
 
 let runs = [];
@@ -47,26 +49,15 @@ const balanceSlots = [
   { pattern: /summer ?pearls?/i, label: "Summer Pearls", icon: "Summer Pearls" },
   { pattern: /trait.*reroll/i, label: "Trait Reroll", icon: "Trait Reroll" }
 ];
-const fallbackIcons = [
-  ["summer pearl", "pearl"], ["dawn coin", "coin"], ["scarlet ore", "ore"],
-  ["grade sword", "sword-grade"], ["coin", "coin"], ["gem", "gem"], ["money", "coin"], ["ore", "ore"],
-  ["remnant", "shard"], ["portal", "portal"], ["potion", "potion"], ["talisman", "talisman"],
-  ["sprig", "sprig"], ["tome", "tome"], ["ring", "ring"]
-];
-
-function lookupIcon(entries, label, normalizer) {
-  const key = normalizer(label);
-  return entries.find(([name]) => name === key)
-    || entries.find(([name]) => key.length >= 4 && (
-      (key.length >= 5 && name.includes(key)) || (name.length >= 5 && key.includes(name))
-    ));
+function itemImage(name) {
+  const key = normalizeName(name === "Money" ? "Gold" : name);
+  const match = itemIcons.find(([candidate]) => candidate === key);
+  return match ? "/assets/items/" + match[1] : "";
 }
 
-function itemImage(name) {
-  const match = lookupIcon(itemIcons, name === "Money" ? "Gold" : name, normalizeName);
-  if (match) return "/assets/items/" + match[1];
-  const fallback = fallbackIcons.find(([term]) => String(name).toLowerCase().includes(term));
-  return "/assets/" + (fallback ? fallback[1] : "chest") + ".svg";
+function itemArt(name) {
+  const src = itemImage(name);
+  return src ? '<img loading="lazy" src="' + escapeHTML(src) + '" alt="">' : "";
 }
 
 function rarityBadge(name) {
@@ -77,7 +68,7 @@ function rarityBadge(name) {
 }
 
 function mapImage(name, sourceUrl) {
-  const fullName = normalizeMap(name);
+  const fullName = normalizeMap(String(name).replace(/\(\s*tier\s*\d+\s*\)/gi, ""));
   const baseName = normalizeMap(String(name).split("(")[0]);
   const match = mapIcons.find(([key]) => key === fullName) || mapIcons.find(([key]) => key === baseName);
   const local = match ? "/assets/maps/" + match[1] : "";
@@ -234,8 +225,7 @@ function balanceFromReport(slot) {
 function renderBalances() {
   $("tiles").innerHTML = balanceSlots.map((slot) => {
     const amount = formatNumber(balanceFromReport(slot));
-    return '<div class="balance-item"><img src="' + itemImage(slot.icon) +
-      '" alt=""><div><strong>' + amount + '</strong><span>' + escapeHTML(slot.label) +
+    return '<div class="balance-item">' + itemArt(slot.icon) + '<div><strong>' + amount + '</strong><span>' + escapeHTML(slot.label) +
       '</span></div></div>';
   }).join("");
   attachImageFallbacks($("tiles"));
@@ -264,7 +254,7 @@ function renderRewards() {
   $("rewards").innerHTML = visibleItems.map(([name, amount]) =>
     '<div class="reward-item" style="--item-color:hsl(' + hueFor(name) + ' 70% 62%)">' +
       '<strong>' + compactNumber(amount) + '</strong>' +
-      '<img loading="lazy" src="' + itemImage(name) + '" alt="">' +
+      itemArt(name) +
       '<span title="' + escapeHTML(name) + '">' + escapeHTML(name) + '</span>' + rarityBadge(name) + '</div>'
   ).join("") || '<div class="loading-state">No reward items recorded yet.</div>';
   $("moreItems").hidden = inventory.length <= 9;
@@ -292,7 +282,7 @@ function renderRunDetails(run, index) {
     escapeHTML(value) + '</strong></div>'
   ).join("");
   const allRewards = (run.rewards || []).map((entry) =>
-    '<div class="run-detail-reward"><img loading="lazy" src="' + itemImage(entry.item) + '" alt="">' +
+    '<div class="run-detail-reward">' + itemArt(entry.item) +
     '<div class="run-detail-item-copy"><span class="run-detail-item-name">' + escapeHTML(entry.item) + '</span>' + rarityBadge(entry.item) + '</div><b>+' + formatNumber(entry.amount) + '</b>' +
     (entry.total == null ? '' : '<small>Total ' + formatNumber(entry.total) + '</small>') + '</div>'
   ).join("") || '<p class="run-details-empty">No reward items were included in this report.</p>';
@@ -383,7 +373,7 @@ function renderRuns() {
     ].filter(Boolean).map((value) => "<span>" + value + "</span>").join("");
     const dropMarkup = (run.rewards || []).filter((entry) => !hiddenReward.test(entry.item))
       .slice(0, 4).map((entry) =>
-        '<span class="reward-chip"><img src="' + itemImage(entry.item) + '" alt="">' +
+        '<span class="reward-chip">' + itemArt(entry.item) +
         '<span>' + escapeHTML(entry.item) + '</span><b>×' +
         formatNumber(entry.amount) + '</b></span>'
       ).join("") || '<span class="reward-chip">No rewards recorded</span>';
@@ -484,7 +474,7 @@ function attachImageFallbacks(root) {
         return;
       }
       image.onerror = null;
-      image.src = "/assets/chest.svg";
+      image.remove();
     };
   });
 }
@@ -542,9 +532,9 @@ async function loadDashboard() {
 
 async function loadManifests() {
   const [itemResponse, mapResponse, rarityResponse] = await Promise.all([
-    fetch("/assets/items/manifest.json").catch(() => null),
-    fetch("/assets/maps/manifest.json").catch(() => null),
-    fetch("/assets/items/rarity.json").catch(() => null)
+    fetch("/assets/items/manifest.json", { cache: "no-store" }).catch(() => null),
+    fetch("/assets/maps/manifest.json", { cache: "no-store" }).catch(() => null),
+    fetch("/assets/items/rarity.json", { cache: "no-store" }).catch(() => null)
   ]);
   if (itemResponse?.ok) {
     const manifest = await itemResponse.json().catch(() => ({}));

@@ -433,7 +433,7 @@ button:focus-visible, input:focus-visible, a:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
-img[src$="sky-portal.png"] { filter: grayscale(1) brightness(1.35) contrast(.9); }
+
 
 html[data-theme="dark"] {
   color-scheme: dark;
@@ -592,3 +592,20 @@ html[data-theme="dark"] .hidden-note { color: #e3b873; }
 
 .run-detail-item-name { overflow: hidden; color: #6d879c; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
 html[data-theme="dark"] .run-detail-item-name { color: #afc0cd; }
+
+.rarity-badge { display:inline-flex; align-items:center; width:fit-content; padding:2px 6px; border:1px solid var(--rarity-color,#7891a8); border-radius:99px; color:var(--rarity-color,#7891a8); font-size:10px; font-weight:800; line-height:1.4; white-space:nowrap; }
+.rarity-common { --rarity-color:#8393a0; }
+.rarity-rare { --rarity-color:#3d9ad6; }
+.rarity-epic { --rarity-color:#a474dc; }
+.rarity-legendary { --rarity-color:#c4932e; }
+.rarity-mythic { --rarity-color:#e06aa5; }
+.rarity-secret { --rarity-color:#a775e6; }
+.rarity-exclusive { --rarity-color:#46a889; }
+.reward-item .rarity-badge { margin:5px auto 0; }
+.run-detail-reward .rarity-badge { font-size:9px; padding:1px 4px; }
+html[data-theme="dark"] .rarity-legendary { --rarity-color:#e5bd65; }
+html[data-theme="dark"] .rarity-secret { --rarity-color:#c6a1fa; }
+
+.run-detail-reward { grid-template-columns:22px minmax(0,1fr) auto; }
+.run-detail-reward > .run-detail-item-copy { grid-column:2; }
+.run-detail-reward > b { grid-column:3; grid-row:1; }

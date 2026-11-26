@@ -1,0 +1,1251 @@
+{
+  "retrieved": "2026-11-26",
+  "catalog": "https://anime-adventures.info/items",
+  "wikiImages": [
+    {
+      "name": "Green Baby",
+      "file": "wiki-green_baby.webp",
+      "source": "https://anime-adventures.info/assets/img/i/green_baby.webp",
+      "id": "green_baby",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Experiment X (Imperfect)",
+      "file": "wiki-unit__cell_imperfect.webp",
+      "source": "https://anime-adventures.info/assets/img/i/unit__cell_imperfect.webp",
+      "id": "unit__cell_imperfect",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Magma Fruit",
+      "file": "wiki-magu_fruit.webp",
+      "source": "https://anime-adventures.info/assets/img/i/magu_fruit.webp",
+      "id": "magu_fruit",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Sharkskin Greatsword",
+      "file": "wiki-kisame_sword.webp",
+      "source": "https://anime-adventures.info/assets/img/i/kisame_sword.webp",
+      "id": "kisame_sword",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Demon Beads",
+      "file": "wiki-akaza_beads.webp",
+      "source": "https://anime-adventures.info/assets/img/i/akaza_beads.webp",
+      "id": "akaza_beads",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Final Contract",
+      "file": "wiki-gon_contract.webp",
+      "source": "https://anime-adventures.info/assets/img/i/gon_contract.webp",
+      "id": "gon_contract",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Endless Tome",
+      "file": "wiki-julius_grimoire.webp",
+      "source": "https://anime-adventures.info/assets/img/i/julius_grimoire.webp",
+      "id": "julius_grimoire",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Elf Staff",
+      "file": "wiki-frieren_staff.webp",
+      "source": "https://anime-adventures.info/assets/img/i/frieren_staff.webp",
+      "id": "frieren_staff",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Heavenly Clock",
+      "file": "wiki-mih_clock.webp",
+      "source": "https://anime-adventures.info/assets/img/i/mih_clock.webp",
+      "id": "mih_clock",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Clown Effigy",
+      "file": "wiki-kite_clown.webp",
+      "source": "https://anime-adventures.info/assets/img/i/kite_clown.webp",
+      "id": "kite_clown",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Spirit Shard",
+      "file": "wiki-soul_shard.webp",
+      "source": "https://anime-adventures.info/assets/img/i/soul_shard.webp",
+      "id": "soul_shard",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Fractured Cubes",
+      "file": "wiki-gildarts_cubes.webp",
+      "source": "https://anime-adventures.info/assets/img/i/gildarts_cubes.webp",
+      "id": "gildarts_cubes",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Shadow Broadsword",
+      "file": "wiki-cid_sword.webp",
+      "source": "https://anime-adventures.info/assets/img/i/cid_sword.webp",
+      "id": "cid_sword",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Sound Sealed Star",
+      "file": "wiki-capsule_sound.webp",
+      "source": "https://anime-adventures.info/assets/img/i/capsule_sound.webp",
+      "id": "capsule_sound",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Celestial Tear",
+      "file": "wiki-celestial_tear.webp",
+      "source": "https://anime-adventures.info/assets/img/i/celestial_tear.webp",
+      "id": "celestial_tear",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Quake Fruit",
+      "file": "wiki-gura_fruit.webp",
+      "source": "https://anime-adventures.info/assets/img/i/gura_fruit.webp",
+      "id": "gura_fruit",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "DISC (Blue)",
+      "file": "wiki-disc_blue.webp",
+      "source": "https://anime-adventures.info/assets/img/i/disc_blue.webp",
+      "id": "disc_blue",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Raid Ticket (Extinction)",
+      "file": "wiki-raid_ticket__aotraid.webp",
+      "source": "https://anime-adventures.info/assets/img/i/raid_ticket__aotraid.webp",
+      "id": "raid_ticket__aotraid",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Celestial Key (Taurus)",
+      "file": "wiki-lucy_key_taurus.webp",
+      "source": "https://anime-adventures.info/assets/img/i/lucy_key_taurus.webp",
+      "id": "lucy_key_taurus",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Fairy Petals",
+      "file": "wiki-7ds_flower.webp",
+      "source": "https://anime-adventures.info/assets/img/i/7ds_flower.webp",
+      "id": "7ds_flower",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Shark Guitar",
+      "file": "wiki-shark_guitar.webp",
+      "source": "https://anime-adventures.info/assets/img/i/shark_guitar.webp",
+      "id": "shark_guitar",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Dark Katana",
+      "file": "wiki-yami_katana.webp",
+      "source": "https://anime-adventures.info/assets/img/i/yami_katana.webp",
+      "id": "yami_katana",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Evil Queen's Piece",
+      "file": "wiki-april_queen.webp",
+      "source": "https://anime-adventures.info/assets/img/i/april_queen.webp",
+      "id": "april_queen",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Electric Dagger",
+      "file": "wiki-electricdagger.webp",
+      "source": "https://anime-adventures.info/assets/img/i/electricdagger.webp",
+      "id": "electricdagger",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Demonic Wing",
+      "file": "wiki-asta_wing.webp",
+      "source": "https://anime-adventures.info/assets/img/i/asta_wing.webp",
+      "id": "asta_wing",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Dark Crystallite",
+      "file": "wiki-sao_crystal_purple.webp",
+      "source": "https://anime-adventures.info/assets/img/i/sao_crystal_purple.webp",
+      "id": "sao_crystal_purple",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Blood Crystallite",
+      "file": "wiki-sao_crystal_red.webp",
+      "source": "https://anime-adventures.info/assets/img/i/sao_crystal_red.webp",
+      "id": "sao_crystal_red",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Steel Shiv",
+      "file": "wiki-relic_dagger.webp",
+      "source": "https://anime-adventures.info/assets/img/i/relic_dagger.webp",
+      "id": "relic_dagger",
+      "rarity": "Epic"
+    },
+    {
+      "name": "Dragon Fire",
+      "file": "wiki-natsu_fire.webp",
+      "source": "https://anime-adventures.info/assets/img/i/natsu_fire.webp",
+      "id": "natsu_fire",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "DISC (Purple)",
+      "file": "wiki-disc_purple.webp",
+      "source": "https://anime-adventures.info/assets/img/i/disc_purple.webp",
+      "id": "disc_purple",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Silver Greatsword",
+      "file": "wiki-starlia_greatsword.webp",
+      "source": "https://anime-adventures.info/assets/img/i/starlia_greatsword.webp",
+      "id": "starlia_greatsword",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Frozen Star",
+      "file": "wiki-capsule_christmas.webp",
+      "source": "https://anime-adventures.info/assets/img/i/capsule_christmas.webp",
+      "id": "capsule_christmas",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Sichel des Trugs",
+      "file": "wiki-rikka_evolve.webp",
+      "source": "https://anime-adventures.info/assets/img/i/rikka_evolve.webp",
+      "id": "rikka_evolve",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Black Spear",
+      "file": "wiki-judar_spear.webp",
+      "source": "https://anime-adventures.info/assets/img/i/judar_spear.webp",
+      "id": "judar_spear",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Sacred Treasure",
+      "file": "wiki-shibuya_wheel.webp",
+      "source": "https://anime-adventures.info/assets/img/i/shibuya_wheel.webp",
+      "id": "shibuya_wheel",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Full Power Core",
+      "file": "wiki-opm_core_full.webp",
+      "source": "https://anime-adventures.info/assets/img/i/opm_core_full.webp",
+      "id": "opm_core_full",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Sunshine Essence",
+      "file": "wiki-escanor_sun.webp",
+      "source": "https://anime-adventures.info/assets/img/i/escanor_sun.webp",
+      "id": "escanor_sun",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Hidden Seal",
+      "file": "wiki-naruto_seal.webp",
+      "source": "https://anime-adventures.info/assets/img/i/naruto_seal.webp",
+      "id": "naruto_seal",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Celestial Star",
+      "file": "wiki-capsule_fairytail_infinite.webp",
+      "source": "https://anime-adventures.info/assets/img/i/capsule_fairytail_infinite.webp",
+      "id": "capsule_fairytail_infinite",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Lightning Blade",
+      "file": "wiki-sasuke_sword.webp",
+      "source": "https://anime-adventures.info/assets/img/i/sasuke_sword.webp",
+      "id": "sasuke_sword",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Worthy Soul",
+      "file": "wiki-worthy_soul.webp",
+      "source": "https://anime-adventures.info/assets/img/i/worthy_soul.webp",
+      "id": "worthy_soul",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Silver Slayer",
+      "file": "wiki-ragna_sword.webp",
+      "source": "https://anime-adventures.info/assets/img/i/ragna_sword.webp",
+      "id": "ragna_sword",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Staff of Realms",
+      "file": "wiki-buddha_staff.webp",
+      "source": "https://anime-adventures.info/assets/img/i/buddha_staff.webp",
+      "id": "buddha_staff",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Snow Wings",
+      "file": "wiki-monet_wings.webp",
+      "source": "https://anime-adventures.info/assets/img/i/monet_wings.webp",
+      "id": "monet_wings",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Clover Of The Wind",
+      "file": "wiki-yuno_clover.webp",
+      "source": "https://anime-adventures.info/assets/img/i/yuno_clover.webp",
+      "id": "yuno_clover",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Perfect Soul Orb",
+      "file": "wiki-hogyoku_placeholder.webp",
+      "source": "https://anime-adventures.info/assets/img/i/hogyoku_placeholder.webp",
+      "id": "hogyoku_placeholder",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Cool Star",
+      "file": "wiki-capsule_cool.webp",
+      "source": "https://anime-adventures.info/assets/img/i/capsule_cool.webp",
+      "id": "capsule_cool",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "5-Leaf Clover",
+      "file": "wiki-asta_clover.webp",
+      "source": "https://anime-adventures.info/assets/img/i/asta_clover.webp",
+      "id": "asta_clover",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Icy Star",
+      "file": "wiki-capsule_christmas2.webp",
+      "source": "https://anime-adventures.info/assets/img/i/capsule_christmas2.webp",
+      "id": "capsule_christmas2",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Sky Reaver",
+      "file": "wiki-chihiro_evolve.webp",
+      "source": "https://anime-adventures.info/assets/img/i/chihiro_evolve.webp",
+      "id": "chihiro_evolve",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Frozen Mirror",
+      "file": "wiki-haku_mirror.webp",
+      "source": "https://anime-adventures.info/assets/img/i/haku_mirror.webp",
+      "id": "haku_mirror",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Crazy Dice",
+      "file": "wiki-kite_dice.webp",
+      "source": "https://anime-adventures.info/assets/img/i/kite_dice.webp",
+      "id": "kite_dice",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "DISC (Black)",
+      "file": "wiki-disc_black.webp",
+      "source": "https://anime-adventures.info/assets/img/i/disc_black.webp",
+      "id": "disc_black",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Magic Cutlery",
+      "file": "wiki-charmy_evolve_item.webp",
+      "source": "https://anime-adventures.info/assets/img/i/charmy_evolve_item.webp",
+      "id": "charmy_evolve_item",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Relic Shard",
+      "file": "wiki-relic_shard.webp",
+      "source": "https://anime-adventures.info/assets/img/i/relic_shard.webp",
+      "id": "relic_shard",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Demonic Chalice",
+      "file": "wiki-demon_chalice.webp",
+      "source": "https://anime-adventures.info/assets/img/i/demon_chalice.webp",
+      "id": "demon_chalice",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Celestial Key (Aquarius)",
+      "file": "wiki-lucy_key_aquarius.webp",
+      "source": "https://anime-adventures.info/assets/img/i/lucy_key_aquarius.webp",
+      "id": "lucy_key_aquarius",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Electric Yo-yo",
+      "file": "wiki-killua_yoyo.webp",
+      "source": "https://anime-adventures.info/assets/img/i/killua_yoyo.webp",
+      "id": "killua_yoyo",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Fate Shard",
+      "file": "wiki-aot_shard.webp",
+      "source": "https://anime-adventures.info/assets/img/i/aot_shard.webp",
+      "id": "aot_shard",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Infinite Power Core (Pink)",
+      "file": "wiki-cell_core_pink.webp",
+      "source": "https://anime-adventures.info/assets/img/i/cell_core_pink.webp",
+      "id": "cell_core_pink",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Celestial Key (Final)",
+      "file": "wiki-lucy_key.webp",
+      "source": "https://anime-adventures.info/assets/img/i/lucy_key.webp",
+      "id": "lucy_key",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Lightning Fiend's Horns",
+      "file": "wiki-luck_horns.webp",
+      "source": "https://anime-adventures.info/assets/img/i/luck_horns.webp",
+      "id": "luck_horns",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "String Portal",
+      "file": "wiki-portal_item__doflamingo.webp",
+      "source": "https://anime-adventures.info/assets/img/i/portal_item__doflamingo.webp",
+      "id": "portal_item__doflamingo",
+      "rarity": "Secret"
+    },
+    {
+      "name": "Mage Mark",
+      "file": "wiki-majin_symbol.webp",
+      "source": "https://anime-adventures.info/assets/img/i/majin_symbol.webp",
+      "id": "majin_symbol",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Final Disc Fragment",
+      "file": "wiki-disc_final_shard.webp",
+      "source": "https://anime-adventures.info/assets/img/i/disc_final_shard.webp",
+      "id": "disc_final_shard",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Demon Leader's Portal",
+      "file": "wiki-portal_zeldris.webp",
+      "source": "https://anime-adventures.info/assets/img/i/portal_zeldris.webp",
+      "id": "portal_zeldris",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Anniversary Starry Ball",
+      "file": "wiki-dragon_ball_anniversary.webp",
+      "source": "https://anime-adventures.info/assets/img/i/dragon_ball_anniversary.webp",
+      "id": "dragon_ball_anniversary",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Amplifying Codex",
+      "file": "wiki-relic_book.webp",
+      "source": "https://anime-adventures.info/assets/img/i/relic_book.webp",
+      "id": "relic_book",
+      "rarity": "Epic"
+    },
+    {
+      "name": "Blazing Creme Donut",
+      "file": "wiki-rengoku_donut.webp",
+      "source": "https://anime-adventures.info/assets/img/i/rengoku_donut.webp",
+      "id": "rengoku_donut",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Miracle Timepiece",
+      "file": "wiki-hourglass_relic.webp",
+      "source": "https://anime-adventures.info/assets/img/i/hourglass_relic.webp",
+      "id": "hourglass_relic",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Ice Crystallite",
+      "file": "wiki-sao_crystal_blue.webp",
+      "source": "https://anime-adventures.info/assets/img/i/sao_crystal_blue.webp",
+      "id": "sao_crystal_blue",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Hybrid Shard",
+      "file": "wiki-chimera_shard.webp",
+      "source": "https://anime-adventures.info/assets/img/i/chimera_shard.webp",
+      "id": "chimera_shard",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Fiend Coffee",
+      "file": "wiki-coffee.webp",
+      "source": "https://anime-adventures.info/assets/img/i/coffee.webp",
+      "id": "coffee",
+      "rarity": "Common"
+    },
+    {
+      "name": "Demon Academy Symbol",
+      "file": "wiki-april_symbol.webp",
+      "source": "https://anime-adventures.info/assets/img/i/april_symbol.webp",
+      "id": "april_symbol",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Fruit",
+      "file": "wiki-xp_devil_fruit.webp",
+      "source": "https://anime-adventures.info/assets/img/i/xp_devil_fruit.webp",
+      "id": "xp_devil_fruit",
+      "rarity": "Common"
+    },
+    {
+      "name": "Mystic Flower",
+      "file": "wiki-wisteria_flower.webp",
+      "source": "https://anime-adventures.info/assets/img/i/wisteria_flower.webp",
+      "id": "wisteria_flower",
+      "rarity": "Common"
+    },
+    {
+      "name": "Ultrasteel Blade",
+      "file": "wiki-aot_blade.webp",
+      "source": "https://anime-adventures.info/assets/img/i/aot_blade.webp",
+      "id": "aot_blade",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Shiny Key (Haunted Procession)",
+      "file": "wiki-key_jjk_map_shiny.webp",
+      "source": "https://anime-adventures.info/assets/img/i/key_jjk_map_shiny.webp",
+      "id": "key_jjk_map_shiny",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Mysterious Cat",
+      "file": "wiki-osaka_evolve.webp",
+      "source": "https://anime-adventures.info/assets/img/i/osaka_evolve.webp",
+      "id": "osaka_evolve",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Vivid Gem",
+      "file": "wiki-blue_gem_material.webp",
+      "source": "https://anime-adventures.info/assets/img/i/blue_gem_material.webp",
+      "id": "blue_gem_material",
+      "rarity": "Rare"
+    },
+    {
+      "name": "Precision Glasses",
+      "file": "wiki-kento_glasses.webp",
+      "source": "https://anime-adventures.info/assets/img/i/kento_glasses.webp",
+      "id": "kento_glasses",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Mini Time Machine",
+      "file": "wiki-trunks_time_machine.webp",
+      "source": "https://anime-adventures.info/assets/img/i/trunks_time_machine.webp",
+      "id": "trunks_time_machine",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Supernova",
+      "file": "wiki-frieza_evolve_item.webp",
+      "source": "https://anime-adventures.info/assets/img/i/frieza_evolve_item.webp",
+      "id": "frieza_evolve_item",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Cursed Magic Stone",
+      "file": "wiki-black_clover_stone_red.webp",
+      "source": "https://anime-adventures.info/assets/img/i/black_clover_stone_red.webp",
+      "id": "black_clover_stone_red",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Mermaid Crown",
+      "file": "wiki-noelle_crown.webp",
+      "source": "https://anime-adventures.info/assets/img/i/noelle_crown.webp",
+      "id": "noelle_crown",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Hellfire Blade",
+      "file": "wiki-yamamoto_sword.webp",
+      "source": "https://anime-adventures.info/assets/img/i/yamamoto_sword.webp",
+      "id": "yamamoto_sword",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Peerless Eye",
+      "file": "wiki-six_eyes.webp",
+      "source": "https://anime-adventures.info/assets/img/i/six_eyes.webp",
+      "id": "six_eyes",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Demon Extract",
+      "file": "wiki-esdeath_cup.webp",
+      "source": "https://anime-adventures.info/assets/img/i/esdeath_cup.webp",
+      "id": "esdeath_cup",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Summer Star",
+      "file": "wiki-capsule_summer.webp",
+      "source": "https://anime-adventures.info/assets/img/i/capsule_summer.webp",
+      "id": "capsule_summer",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Tear Mask",
+      "file": "wiki-arrancar_mask.webp",
+      "source": "https://anime-adventures.info/assets/img/i/arrancar_mask.webp",
+      "id": "arrancar_mask",
+      "rarity": "Rare"
+    },
+    {
+      "name": "Angelic Bat",
+      "file": "wiki-dokuro_evolve.webp",
+      "source": "https://anime-adventures.info/assets/img/i/dokuro_evolve.webp",
+      "id": "dokuro_evolve",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Shadow Fruit",
+      "file": "wiki-moria_fruit.webp",
+      "source": "https://anime-adventures.info/assets/img/i/moria_fruit.webp",
+      "id": "moria_fruit",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Golden Rose",
+      "file": "wiki-netero_rose.webp",
+      "source": "https://anime-adventures.info/assets/img/i/netero_rose.webp",
+      "id": "netero_rose",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "DISC (Pink)",
+      "file": "wiki-disc_pink.webp",
+      "source": "https://anime-adventures.info/assets/img/i/disc_pink.webp",
+      "id": "disc_pink",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Demon Symbol",
+      "file": "wiki-piccolo_evolve_item.webp",
+      "source": "https://anime-adventures.info/assets/img/i/piccolo_evolve_item.webp",
+      "id": "piccolo_evolve_item",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Arsenal Briefcase",
+      "file": "wiki-weapon_briefcase.webp",
+      "source": "https://anime-adventures.info/assets/img/i/weapon_briefcase.webp",
+      "id": "weapon_briefcase",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Final Disc",
+      "file": "wiki-disc_final.webp",
+      "source": "https://anime-adventures.info/assets/img/i/disc_final.webp",
+      "id": "disc_final",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Devil Ice",
+      "file": "wiki-gray_item.webp",
+      "source": "https://anime-adventures.info/assets/img/i/gray_item.webp",
+      "id": "gray_item",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Poison Bulb",
+      "file": "wiki-fugo_bulb.webp",
+      "source": "https://anime-adventures.info/assets/img/i/fugo_bulb.webp",
+      "id": "fugo_bulb",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Mermaid Scale",
+      "file": "wiki-noelle_scale.webp",
+      "source": "https://anime-adventures.info/assets/img/i/noelle_scale.webp",
+      "id": "noelle_scale",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Sharktooth Blade",
+      "file": "wiki-harribel_blade.webp",
+      "source": "https://anime-adventures.info/assets/img/i/harribel_blade.webp",
+      "id": "harribel_blade",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Spirit Spear",
+      "file": "wiki-ulquiorra_spear.webp",
+      "source": "https://anime-adventures.info/assets/img/i/ulquiorra_spear.webp",
+      "id": "ulquiorra_spear",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Super Capsule",
+      "file": "wiki-vegeta_capsule.webp",
+      "source": "https://anime-adventures.info/assets/img/i/vegeta_capsule.webp",
+      "id": "vegeta_capsule",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Star Remnant",
+      "file": "wiki-star_remnant.webp",
+      "source": "https://anime-adventures.info/assets/img/i/star_remnant.webp",
+      "id": "star_remnant",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Heart Bomb",
+      "file": "wiki-jojop4_hattack.webp",
+      "source": "https://anime-adventures.info/assets/img/i/jojop4_hattack.webp",
+      "id": "jojop4_hattack",
+      "rarity": "Epic"
+    },
+    {
+      "name": "Golden Portal",
+      "file": "wiki-portal_item__gilgamesh.webp",
+      "source": "https://anime-adventures.info/assets/img/i/portal_item__gilgamesh.webp",
+      "id": "portal_item__gilgamesh",
+      "rarity": "Secret"
+    },
+    {
+      "name": "Ice Lotus",
+      "file": "wiki-toshiro_evolve_item.webp",
+      "source": "https://anime-adventures.info/assets/img/i/toshiro_evolve_item.webp",
+      "id": "toshiro_evolve_item",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Zombie Doll",
+      "file": "wiki-perona_doll.webp",
+      "source": "https://anime-adventures.info/assets/img/i/perona_doll.webp",
+      "id": "perona_doll",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Imperfect Soul Orb",
+      "file": "wiki-hogyoku.webp",
+      "source": "https://anime-adventures.info/assets/img/i/hogyoku.webp",
+      "id": "hogyoku",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Negation Box",
+      "file": "wiki-aizen_cube.webp",
+      "source": "https://anime-adventures.info/assets/img/i/aizen_cube.webp",
+      "id": "aizen_cube",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Spooky Star",
+      "file": "wiki-capsule_halloween2.webp",
+      "source": "https://anime-adventures.info/assets/img/i/capsule_halloween2.webp",
+      "id": "capsule_halloween2",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Dumbell",
+      "file": "wiki-mash_dumbell.webp",
+      "source": "https://anime-adventures.info/assets/img/i/mash_dumbell.webp",
+      "id": "mash_dumbell",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Dimensional Star",
+      "file": "wiki-capsule_dimension.webp",
+      "source": "https://anime-adventures.info/assets/img/i/capsule_dimension.webp",
+      "id": "capsule_dimension",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Ice-Fire Orb",
+      "file": "wiki-todoroki_2_evolve.webp",
+      "source": "https://anime-adventures.info/assets/img/i/todoroki_2_evolve.webp",
+      "id": "todoroki_2_evolve",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Cross Gun",
+      "file": "wiki-vash_cross.webp",
+      "source": "https://anime-adventures.info/assets/img/i/vash_cross.webp",
+      "id": "vash_cross",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Odd Shard",
+      "file": "wiki-quirk_shard.webp",
+      "source": "https://anime-adventures.info/assets/img/i/quirk_shard.webp",
+      "id": "quirk_shard",
+      "rarity": "Common"
+    },
+    {
+      "name": "Celestial Key (Leo)",
+      "file": "wiki-lucy_key_leo.webp",
+      "source": "https://anime-adventures.info/assets/img/i/lucy_key_leo.webp",
+      "id": "lucy_key_leo",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Infinite Power Core (Yellow)",
+      "file": "wiki-cell_core_yellow.webp",
+      "source": "https://anime-adventures.info/assets/img/i/cell_core_yellow.webp",
+      "id": "cell_core_yellow",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Key (Haunted Procession)",
+      "file": "wiki-key_jjk_map.webp",
+      "source": "https://anime-adventures.info/assets/img/i/key_jjk_map.webp",
+      "id": "key_jjk_map",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Ninja Scroll (Wood)",
+      "file": "wiki-naruto_wood_scroll.webp",
+      "source": "https://anime-adventures.info/assets/img/i/naruto_wood_scroll.webp",
+      "id": "naruto_wood_scroll",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Restoration Diamond",
+      "file": "wiki-jojop4_diamond.webp",
+      "source": "https://anime-adventures.info/assets/img/i/jojop4_diamond.webp",
+      "id": "jojop4_diamond",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Spirit Bean",
+      "file": "wiki-senzu_bean.webp",
+      "source": "https://anime-adventures.info/assets/img/i/senzu_bean.webp",
+      "id": "senzu_bean",
+      "rarity": "Common"
+    },
+    {
+      "name": "Dimensional Hood",
+      "file": "wiki-cream_hood.webp",
+      "source": "https://anime-adventures.info/assets/img/i/cream_hood.webp",
+      "id": "cream_hood",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Echo Egg",
+      "file": "wiki-jojop4_egg.webp",
+      "source": "https://anime-adventures.info/assets/img/i/jojop4_egg.webp",
+      "id": "jojop4_egg",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Pirate King's Hat",
+      "file": "wiki-roger_hat.webp",
+      "source": "https://anime-adventures.info/assets/img/i/roger_hat.webp",
+      "id": "roger_hat",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Wolf Shadow",
+      "file": "wiki-megumi_wolf.webp",
+      "source": "https://anime-adventures.info/assets/img/i/megumi_wolf.webp",
+      "id": "megumi_wolf",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Hero Guantlet",
+      "file": "wiki-mha_evolve_item_2.webp",
+      "source": "https://anime-adventures.info/assets/img/i/mha_evolve_item_2.webp",
+      "id": "mha_evolve_item_2",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Martial Demon",
+      "file": "wiki-unit__akaza_unit.webp",
+      "source": "https://anime-adventures.info/assets/img/i/unit__akaza_unit.webp",
+      "id": "unit__akaza_unit",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Infinite Power Core",
+      "file": "wiki-cell_core_blue.webp",
+      "source": "https://anime-adventures.info/assets/img/i/cell_core_blue.webp",
+      "id": "cell_core_blue",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Anniversary Star",
+      "file": "wiki-capsule_anniversary.webp",
+      "source": "https://anime-adventures.info/assets/img/i/capsule_anniversary.webp",
+      "id": "capsule_anniversary",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Demonic Horn",
+      "file": "wiki-demon_horn2.webp",
+      "source": "https://anime-adventures.info/assets/img/i/demon_horn2.webp",
+      "id": "demon_horn2",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Spirit Crown",
+      "file": "wiki-yuno_crown.webp",
+      "source": "https://anime-adventures.info/assets/img/i/yuno_crown.webp",
+      "id": "yuno_crown",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Killer Coin",
+      "file": "wiki-jojop4_coin.webp",
+      "source": "https://anime-adventures.info/assets/img/i/jojop4_coin.webp",
+      "id": "jojop4_coin",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Crystal Shards",
+      "file": "wiki-eto_shards.webp",
+      "source": "https://anime-adventures.info/assets/img/i/eto_shards.webp",
+      "id": "eto_shards",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Cursed Token",
+      "file": "wiki-sukuna_finger.webp",
+      "source": "https://anime-adventures.info/assets/img/i/sukuna_finger.webp",
+      "id": "sukuna_finger",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Mirrorblade",
+      "file": "wiki-lostvayne.webp",
+      "source": "https://anime-adventures.info/assets/img/i/lostvayne.webp",
+      "id": "lostvayne",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Essense of the Knight",
+      "file": "wiki-erza_items.webp",
+      "source": "https://anime-adventures.info/assets/img/i/erza_items.webp",
+      "id": "erza_items",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Idol Mic",
+      "file": "wiki-oshi_mic.webp",
+      "source": "https://anime-adventures.info/assets/img/i/oshi_mic.webp",
+      "id": "oshi_mic",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Scales of the Salamander",
+      "file": "wiki-tatara_scales.webp",
+      "source": "https://anime-adventures.info/assets/img/i/tatara_scales.webp",
+      "id": "tatara_scales",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Kunai",
+      "file": "wiki-relic_kunai.webp",
+      "source": "https://anime-adventures.info/assets/img/i/relic_kunai.webp",
+      "id": "relic_kunai",
+      "rarity": "Epic"
+    },
+    {
+      "name": "Ninja Scroll (Fire)",
+      "file": "wiki-naruto_fire_scroll.webp",
+      "source": "https://anime-adventures.info/assets/img/i/naruto_fire_scroll.webp",
+      "id": "naruto_fire_scroll",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Endless Blades",
+      "file": "wiki-relic_switchblade.webp",
+      "source": "https://anime-adventures.info/assets/img/i/relic_switchblade.webp",
+      "id": "relic_switchblade",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Cupcake",
+      "file": "wiki-cupcake.webp",
+      "source": "https://anime-adventures.info/assets/img/i/cupcake.webp",
+      "id": "cupcake",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Forbidden Candy",
+      "file": "wiki-forbidden_candy.webp",
+      "source": "https://anime-adventures.info/assets/img/i/forbidden_candy.webp",
+      "id": "forbidden_candy",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Reality Pen",
+      "file": "wiki-jojop4_pen.webp",
+      "source": "https://anime-adventures.info/assets/img/i/jojop4_pen.webp",
+      "id": "jojop4_pen",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Broken Puppet",
+      "file": "wiki-pitou_puppet.webp",
+      "source": "https://anime-adventures.info/assets/img/i/pitou_puppet.webp",
+      "id": "pitou_puppet",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Haunted Star",
+      "file": "wiki-capsule_halloween.webp",
+      "source": "https://anime-adventures.info/assets/img/i/capsule_halloween.webp",
+      "id": "capsule_halloween",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Demonic Spellbook",
+      "file": "wiki-demon_book.webp",
+      "source": "https://anime-adventures.info/assets/img/i/demon_book.webp",
+      "id": "demon_book",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Rusted Coin",
+      "file": "wiki-chad_coin.webp",
+      "source": "https://anime-adventures.info/assets/img/i/chad_coin.webp",
+      "id": "chad_coin",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Spirit Candy",
+      "file": "wiki-soul_candy.webp",
+      "source": "https://anime-adventures.info/assets/img/i/soul_candy.webp",
+      "id": "soul_candy",
+      "rarity": "Common"
+    },
+    {
+      "name": "Cursed Orb (Maximum)",
+      "file": "wiki-curse_orb_2.webp",
+      "source": "https://anime-adventures.info/assets/img/i/curse_orb_2.webp",
+      "id": "curse_orb_2",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Academy Star",
+      "file": "wiki-capsule_fairytail.webp",
+      "source": "https://anime-adventures.info/assets/img/i/capsule_fairytail.webp",
+      "id": "capsule_fairytail",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "King's Idol",
+      "file": "wiki-black_king.webp",
+      "source": "https://anime-adventures.info/assets/img/i/black_king.webp",
+      "id": "black_king",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Cursed Wristwatch",
+      "file": "wiki-kento_watch.webp",
+      "source": "https://anime-adventures.info/assets/img/i/kento_watch.webp",
+      "id": "kento_watch",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Ice Flower Star",
+      "file": "wiki-capsule_ice.webp",
+      "source": "https://anime-adventures.info/assets/img/i/capsule_ice.webp",
+      "id": "capsule_ice",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Sealed Fire Staff",
+      "file": "wiki-yamamoto_staff.webp",
+      "source": "https://anime-adventures.info/assets/img/i/yamamoto_staff.webp",
+      "id": "yamamoto_staff",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Mjolnir",
+      "file": "wiki-thor_hammer.webp",
+      "source": "https://anime-adventures.info/assets/img/i/thor_hammer.webp",
+      "id": "thor_hammer",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Sacred Treasure (Adapted)",
+      "file": "wiki-shibuya_wheel_final.webp",
+      "source": "https://anime-adventures.info/assets/img/i/shibuya_wheel_final.webp",
+      "id": "shibuya_wheel_final",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Fiery Ankh",
+      "file": "wiki-avdol_ankh.webp",
+      "source": "https://anime-adventures.info/assets/img/i/avdol_ankh.webp",
+      "id": "avdol_ankh",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "DISC (Green)",
+      "file": "wiki-disc_green.webp",
+      "source": "https://anime-adventures.info/assets/img/i/disc_green.webp",
+      "id": "disc_green",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Shining Extract",
+      "file": "wiki-shining_extract.webp",
+      "source": "https://anime-adventures.info/assets/img/i/shining_extract.webp",
+      "id": "shining_extract",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Raid Ticket (Nightmare Train)",
+      "file": "wiki-raid_ticket__demonslayerraid.webp",
+      "source": "https://anime-adventures.info/assets/img/i/raid_ticket__demonslayerraid.webp",
+      "id": "raid_ticket__demonslayerraid",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Promise Ring",
+      "file": "wiki-yuta_ring.webp",
+      "source": "https://anime-adventures.info/assets/img/i/yuta_ring.webp",
+      "id": "yuta_ring",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Restraining Necklace",
+      "file": "wiki-broly_necklace.webp",
+      "source": "https://anime-adventures.info/assets/img/i/broly_necklace.webp",
+      "id": "broly_necklace",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Curse Star",
+      "file": "wiki-capsule_jjk.webp",
+      "source": "https://anime-adventures.info/assets/img/i/capsule_jjk.webp",
+      "id": "capsule_jjk",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Fusion Jacket",
+      "file": "wiki-veku_jacket.webp",
+      "source": "https://anime-adventures.info/assets/img/i/veku_jacket.webp",
+      "id": "veku_jacket",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "Enchanted Magic Stone",
+      "file": "wiki-black_clover_stone_gold.webp",
+      "source": "https://anime-adventures.info/assets/img/i/black_clover_stone_gold.webp",
+      "id": "black_clover_stone_gold",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Ninja Scroll (Water)",
+      "file": "wiki-naruto_water_scroll.webp",
+      "source": "https://anime-adventures.info/assets/img/i/naruto_water_scroll.webp",
+      "id": "naruto_water_scroll",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Hat of the Conqueror",
+      "file": "wiki-straw_hat.webp",
+      "source": "https://anime-adventures.info/assets/img/i/straw_hat.webp",
+      "id": "straw_hat",
+      "rarity": "Mythic"
+    },
+    {
+      "name": "DISC (Orange)",
+      "file": "wiki-disc_orange.webp",
+      "source": "https://anime-adventures.info/assets/img/i/disc_orange.webp",
+      "id": "disc_orange",
+      "rarity": "Legendary"
+    },
+    {
+      "name": "Periapt of the King",
+      "file": "wiki-behelit_red.webp",
+      "source": "https://anime-adventures.info/assets/img/i/behelit_red.webp",
+      "id": "behelit_red",
+      "rarity": "Mythic"
+    }
+  ],
+  "extractedFromGameScreenshots": [
+    {
+      "items": [
+        "Scarlet Ore",
+        "Dawn Coin",
+        "C-Grade Sword"
+      ],
+      "source": "https://itemlevel.net/guide-to-anime-adventures-update-21-5-everything-you-need-to-know/"
+    },
+    {
+      "items": [
+        "Staff of Explosions",
+        "Raijin Drums",
+        "Summer Pearls"
+      ],
+      "source": "https://beebom.com/anime-adventures-megumin-guide/"
+    },
+    {
+      "items": [
+        "Captain's Hat",
+        "Sunny Star"
+      ],
+      "source": "https://beebom.com/how-to-get-evolved-fishi-obsession-in-anime-adventures/"
+    }
+  ],
+  "mapScreenshots": [
+    {
+      "map": "Explosion Mage's Portal",
+      "source": "https://beebom.com/anime-adventures-megumin-guide/",
+      "note": "Actual stage screenshot; not the portal inventory icon."
+    }
+  ],
+  "stillMissingVerifiedInventoryArt": [
+    "Explosion Mage's Portal",
+    "B-Grade Sword",
+    "A-Grade Sword",
+    "S-Grade Sword",
+    "SS-Grade Sword",
+    "SSS-Grade Sword",
+    "Lotus Scepter",
+    "Crusader Sword",
+    "Phoenix Belt",
+    "Celestial Compass (Update 21)",
+    "Summer Charm",
+    "Sky God's Portal",
+    "Sky Portal",
+    "Misty Village defenses"
+  ]
+}
